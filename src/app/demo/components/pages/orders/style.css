@@ -1,0 +1,62 @@
+.atelier,
+.finale,
+.oceanic,
+.roadshow {
+    background: #fff3cd;
+    color: #664d03;
+    border: none;
+    border-radius: 5px;
+}
+.canceled {
+    background: #f1aeb5;
+    color: #58151c;
+    border: none;
+    border-radius: 5px;
+}
+.placed {
+    background: #cfe2ff;
+    color: #052c65;
+    border: none;
+    border-radius: 5px;
+}
+.delivered {
+    background: #a3cfbb;
+    color: #0a3622;
+    border: none;
+    border-radius: 5px;
+}
+.optionGroup {
+    background: white !important;
+    color: black !important;
+}
+.w-100 {
+    width: 180px !important;
+}
+.textOverCompany {
+    width: 150px;
+    position: absolute;
+    top: 24px;
+    margin-left: 5px;
+}
+.textOverCompany input {
+    border: none !important;
+}
+.textOverCompany input:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+select {
+    font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
+        Lucida Grande, sans-serif;
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.87);
+    background: #ffffff;
+    padding: 1rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.38);
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s,
+        box-shadow 0.2s, background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
+
+    width: 100%;
+    border-radius: 4px;
+}

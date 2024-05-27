@@ -1,0 +1,193 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>Manage Notifications</h5>
+            <ul role="tablist" class="tab-nav">
+                <li
+                    *ngFor="let subject of subjects; index as i"
+                    (click)="filterNotifications(subject, i)"
+                    class="tab-nav-item"
+                    [class]="activeCamp[i] ? 'active' : null"
+                >
+                    {{ subject }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+
+            <p-table
+                #dt
+                [value]="printNotification"
+                [columns]="selectedColumns"
+                responsiveLayout="scroll"
+                [rows]="30"
+                [scrollable]="true"
+                scrollHeight="500px"
+                [globalFilterFields]="[
+                    'fullname',
+                    'textmessage',
+                    'subject',
+                    'topic',
+                    'email'
+                ]"
+                [paginator]="true"
+                [rowsPerPageOptions]="[100, 200, 500]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedNotifications"
+                selectionMode="multiple"
+                [rowHover]="true"
+                dataKey="id"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search..."
+                                class="w-full sm:w-auto"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th
+                            *ngFor="let field of cols"
+                            [pSortableColumn]="field.field"
+                        >
+                            {{ field.header }}
+                            <p-sortIcon [field]="field.field"></p-sortIcon>
+                            <p-columnFilter
+                                type="text"
+                                [field]="field.field"
+                                display="menu"
+                                class="ml-auto"
+                            ></p-columnFilter>
+                        </th>
+
+                        <th
+                            *ngIf="!activeCamp[activeCamp.length - 1]"
+                            class="w-100"
+                            alignFrozen="right"
+                            pFrozenColumn
+                            [frozen]="true"
+                        >
+                            Answered
+                        </th>
+                        <th alignFrozen="right" pFrozenColumn [frozen]="true">
+                            Details
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-notification>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox
+                                [value]="notification"
+                            ></p-tableCheckbox>
+                        </td>
+
+                        <td style="min-width: 15rem" *ngFor="let field of cols">
+                            <span class="p-column-title">{{
+                                field.header
+                            }}</span>
+                            <span
+                                *ngIf="field.field != 'price'; else pricesField"
+                            >
+                                {{ notification[field.field] }}
+                            </span>
+                            <ng-template #pricesField>
+                                {{
+                                    notification[field.field] | currency : "USD"
+                                }}
+                            </ng-template>
+                        </td>
+                        <td
+                            alignFrozen="right"
+                            pFrozenColumn
+                            [frozen]="true"
+                            *ngIf="!activeCamp[activeCamp.length - 1]"
+                        >
+                            <div class="flex">
+                                <button
+                                    pButton
+                                    pRipple
+                                    class="p-button-rounded p-button-primary mr-2 w-100"
+                                    (click)="answered(notification)"
+                                >
+                                    Mark Answered
+                                </button>
+                            </div>
+                        </td>
+                        <td alignFrozen="right" pFrozenColumn [frozen]="true">
+                            <div class="flex">
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-eye"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="openDetails(notification)"
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog
+            [(visible)]="notificationDialog"
+            [style]="{ width: '550px' }"
+            header="Message Details"
+            [modal]="true"
+            class="p-fluid"
+        >
+            <ng-template pTemplate="content">
+                <div>
+                    <p class="w-100 mb-0">
+                        <strong>From:</strong>
+                    </p>
+                    <h3>{{ fullname }}</h3>
+                    <hr />
+                    <div class="flex">
+                        <p class="w-100">
+                            <strong>Email:</strong><br />{{ email }}
+                        </p>
+                        <p class="w-100">
+                            <strong>Date:</strong><br />{{ date }}
+                        </p>
+                    </div>
+                    <hr />
+                    <p><strong>Subject:</strong><br />{{ subject }}</p>
+                    <hr />
+                    <p><strong>Topic:</strong><br />{{ topic }}</p>
+                    <hr />
+                    <p><strong>Text Message:</strong><br />{{ textmessage }}</p>
+                </div>
+            </ng-template>
+            <!-- 
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Close"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="closeModal()"
+                ></button>
+            </ng-template> -->
+        </p-dialog>
+    </div>
+</div>

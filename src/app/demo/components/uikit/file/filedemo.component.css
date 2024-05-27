@@ -1,0 +1,95 @@
+.folderList {
+    padding: 10px;
+    font-size: 15px;
+    border-bottom: 1px solid rgb(192, 192, 192);
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.folderList:hover {
+    background: rgb(226, 226, 226);
+}
+.folderList p:first-child i {
+    margin-right: 20px;
+}
+.folderList i {
+    margin-right: 20px;
+}
+.folderList p:last-child i:hover {
+    color: blueviolet;
+}
+.subfolderList {
+    padding: 10px 50px;
+    font-size: 15px;
+    border-bottom: 1px solid rgb(192, 192, 192);
+    cursor: pointer;
+    transition: all 0.5s;
+    position: relative;
+}
+.subfolderList:hover {
+    background: rgb(226, 226, 226);
+}
+.Image {
+    width: 300px;
+    height: auto;
+    padding: 20px;
+}
+
+.Image-delete {
+    width: 30px;
+    height: 30px;
+    padding: 9px;
+    background-color: rgb(226, 226, 226);
+    border-radius: 15px;
+    cursor: pointer;
+}
+.Image-delete:hover {
+    width: 30px;
+    height: 30px;
+    padding: 9px;
+    background-color: red;
+    color: white;
+    border-radius: 15px;
+    cursor: pointer;
+}
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    position: relative;
+    margin-right: 10px;
+}
+.ms-auto {
+    margin-left: auto;
+}
+.ms-5 {
+    margin-left: 20px;
+}
+.w-100 {
+    width: 100%;
+}
+.w-20 {
+    width: 100px;
+}
+
+.pi-input {
+    font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
+        Lucida Grande, sans-serif;
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.87);
+    padding: 1rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.38);
+    border-radius: 4px;
+    width: 100%;
+}
+.master-directory-create {
+    padding: 10px 50px;
+    font-size: 15px;
+    border-bottom: 1px solid rgb(192, 192, 192);
+    cursor: pointer;
+    transition: all 0.5s;
+    position: relative;
+}
+.master-directory-create:hover {
+    background: rgb(226, 226, 226);
+}

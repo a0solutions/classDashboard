@@ -3,12 +3,18 @@ import { Product } from 'src/app/demo/api/product';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ProductService } from 'src/app/demo/service/product.service';
+import { urls } from 'src/environments/environment';
+import { NgModel } from '@angular/forms';
+import { UploadEvent } from 'primeng/fileupload';
+import { TokenService } from 'src/app/demo/service/token.service';
 
 @Component({
     templateUrl: './crud.component.html',
     providers: [MessageService],
+    styleUrls: ['./crud.component.css'],
 })
 export class CrudComponent implements OnInit {
+    url: string = urls.url;
     productDialog: boolean = false;
 
     deleteProductDialog: boolean = false;
@@ -22,20 +28,25 @@ export class CrudComponent implements OnInit {
     selectedProducts: Product[] = [];
 
     submitted: boolean = false;
-
+    uploadUrl = urls.urlProducts;
     cols: any[] = [];
     selectedColumns: any[] = [];
     statuses: any[] = [];
-
+    uploadedFiles: any[] = [];
+    isAdmin: boolean = false;
     rowsPerPageOptions = [5, 10, 20];
 
     constructor(
         private productService: ProductService,
         private messageService: MessageService,
-        private cd: ChangeDetectorRef
+        private cd: ChangeDetectorRef,
+        private token: TokenService
     ) {}
 
     ngOnInit() {
+        this.token.isAdmin.subscribe((x) => {
+            this.isAdmin = x;
+        });
         this.productService
             .getProducts()
             .toPromise()
@@ -46,46 +57,17 @@ export class CrudComponent implements OnInit {
 
         this.cols = [
             { field: 'name', header: 'Name' },
-            { field: 'parentRef', header: 'DOR' },
+            { field: 'parentRef', header: 'Parent' },
             { field: 'reference', header: 'Sku' },
+            { field: 'price', header: 'Price' },
+            { field: 'stock', header: 'Stock' },
             { field: 'category', header: 'Category' },
             { field: 'subcategory', header: 'Subcategory' },
             { field: 'color', header: 'Color' },
             { field: 'detailColor', header: 'Detail Color' },
-            { field: 'frameMaterial', header: 'Frame Material' },
-            { field: 'materialDetail', header: 'Material Detail' },
-            { field: 'upholstered', header: 'Upholstered' },
-            { field: 'price', header: 'Price' },
-            { field: 'oldprice', header: 'Offer Price' },
-            { field: 'minimunOrder', header: 'Minimun Order' },
+            { field: 'date', header: 'Created' },
             { field: 'size', header: 'Size' },
             { field: 'sets', header: 'Sets' },
-            { field: 'countryManufacture', header: 'Manufacture' },
-            { field: 'shipType', header: 'Ship Type' },
-            { field: 'displaySets', header: 'Display Sets' },
-            { field: 'overallWidth', header: 'Overall Width' },
-            { field: 'overallHeight', header: 'Overall Height' },
-            { field: 'overallLenght', header: 'Overall Lenght' },
-            { field: 'overallWeight', header: 'Overall Weight' },
-            { field: 'levelAssembly', header: 'Level Assembly' },
-            { field: 'timeAssembly', header: 'Time Assembly' },
-            { field: 'comfortLevel', header: 'Comfort Level' },
-            { field: 'aditionalTools', header: 'Aditional Tools' },
-            { field: 'numberBoxes', header: 'Number of boxes' },
-            { field: 'installationRequired', header: 'Installation' },
-            { field: 'commercialWarranty', header: 'Commercial Warranty' },
-            { field: 'productWarranty', header: 'Product Warranty' },
-            { field: 'warrantyLength', header: 'Warranty Lenght' },
-            {
-                field: 'fullOrLimitedWarranty',
-                header: 'FullorLimited',
-            },
-            { field: 'warrantyDetails', header: 'Warranty Details' },
-            { field: 'headboardHeight', header: ' Head Board Height' },
-            { field: 'stock', header: 'Stock' },
-            { field: 'new', header: 'Is New' },
-            { field: 'offer', header: 'Is Offer' },
-            { field: 'membersOnly', header: 'Members Only' },
         ];
         this.selectedColumns = this.cols;
         this.statuses = [
@@ -120,15 +102,24 @@ export class CrudComponent implements OnInit {
         this.products = this.products.filter(
             (val) => !this.selectedProducts.includes(val)
         );
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Products Deleted',
-            life: 3000,
+        let ids = this.gettingIds(this.selectedProducts);
+        this.productService.deleteProducts(ids).subscribe((x) => {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'Products Deleted',
+                life: 3000,
+            });
+            this.selectedProducts = [];
         });
-        this.selectedProducts = [];
     }
-
+    gettingIds(products: Product[]): string[] {
+        let ids: string[] = [];
+        products.forEach((x) => {
+            ids.push(x.id);
+        });
+        return ids;
+    }
     confirmDelete() {
         this.deleteProductDialog = false;
         this.products = this.products.filter(
@@ -151,23 +142,19 @@ export class CrudComponent implements OnInit {
     saveProduct() {
         this.submitted = true;
         if (this.product.name?.trim()) {
-            if (this.product.id) {
+            if (this.product.reference) {
                 // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus
-                    .value
-                    ? this.product.stock
-                    : this.product.stock;
-                this.products[this.findIndexById(this.product.id)] =
+                this.products[this.findIndexById(this.product.reference)] =
                     this.product;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Updated',
-                    life: 3000,
+                this.productService.postProduct(this.product).subscribe((x) => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Successful',
+                        detail: 'Product Updated',
+                        life: 3000,
+                    });
                 });
             } else {
-                this.product.id = this.createId();
-                this.product.reference = this.createId();
                 this.product.parentRef = 'product-placeholder.svg';
                 // @ts-ignore
                 this.product.inventoryStatus = this.product.inventoryStatus
@@ -191,7 +178,7 @@ export class CrudComponent implements OnInit {
     findIndexById(id: string): number {
         let index = -1;
         for (let i = 0; i < this.products.length; i++) {
-            if (this.products[i].id === id) {
+            if (this.products[i].reference === id) {
                 index = i;
                 break;
             }
@@ -200,20 +187,33 @@ export class CrudComponent implements OnInit {
         return index;
     }
 
-    createId(): string {
-        let id = '';
-        const chars =
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
-
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(
             (event.target as HTMLInputElement).value,
             'contains'
         );
+    }
+    uploadFile(event: any) {
+        const file: File = event.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('MyProducts', file, file.name);
+            this.productService.uploadFile(formData).subscribe((x) => {
+                console.log(x);
+                this.productService
+                    .getProducts()
+                    .toPromise()
+                    .then((data) => {
+                        this.products = data;
+                        this.cd.markForCheck();
+                    });
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Successful',
+                    detail: 'Products Uploaded',
+                    life: 3000,
+                });
+            });
+        }
     }
 }

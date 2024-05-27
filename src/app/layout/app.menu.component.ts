@@ -8,7 +8,7 @@ import { LayoutService } from './service/app.layout.service';
 })
 export class AppMenuComponent implements OnInit {
     model: any[] = [];
-
+    placedOrders: number = 0;
     constructor(public layoutService: LayoutService) {}
 
     ngOnInit() {
@@ -27,12 +27,17 @@ export class AppMenuComponent implements OnInit {
                 label: 'Products',
                 items: [
                     {
-                        label: 'List',
+                        label: 'Products',
                         icon: 'pi pi-fw pi-list',
-                        routerLink: ['/pages/crud'],
+                        routerLink: ['/pages/products'],
                     },
                     {
-                        label: 'Upload Images',
+                        label: 'Promotions',
+                        icon: 'pi pi-fw pi-gift',
+                        routerLink: ['/pages/promotions'],
+                    },
+                    {
+                        label: 'Storage',
                         icon: 'pi pi-fw pi-bookmark',
                         routerLink: ['/uikit/file'],
                     },
@@ -42,14 +47,19 @@ export class AppMenuComponent implements OnInit {
                 label: 'Orders',
                 items: [
                     {
-                        label: 'List',
+                        label: 'Orders',
                         icon: 'pi pi-fw pi-list',
-                        routerLink: ['/pages/empty'],
+                        routerLink: ['/pages/orders'],
                     },
+                ],
+            },
+            {
+                label: 'Notification',
+                items: [
                     {
-                        label: 'Upload Images',
-                        icon: 'pi pi-fw pi-bookmark',
-                        routerLink: ['/uikit/file'],
+                        label: 'Notifications',
+                        icon: 'pi pi-fw pi-bell',
+                        routerLink: ['/pages/notification'],
                     },
                 ],
             },

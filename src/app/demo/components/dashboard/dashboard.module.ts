@@ -9,9 +9,12 @@ import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { DashboardsRoutingModule } from './dashboard-routing.module';
-
+import { OrdersService } from '../../service/orders.service';
+import { BadgeModule } from 'primeng/badge';
+import { NotificationsService } from '../../service/notifications.service';
 @NgModule({
     imports: [
+        BadgeModule,
         CommonModule,
         FormsModule,
         ChartModule,
@@ -20,8 +23,9 @@ import { DashboardsRoutingModule } from './dashboard-routing.module';
         StyleClassModule,
         PanelMenuModule,
         ButtonModule,
-        DashboardsRoutingModule
+        DashboardsRoutingModule,
     ],
-    declarations: [DashboardComponent]
+    declarations: [DashboardComponent],
+    providers: [OrdersService, NotificationsService],
 })
-export class DashboardModule { }
+export class DashboardModule {}

@@ -1,19 +1,206 @@
-<div class="grid">
+<!-- <div class="grid">
     <div class="col-12">
         <div class="card">
             <h5>Advanced</h5>
-            <p-fileUpload name="demo[]" url="./upload.php" (onUpload)="onUpload($event)"
-                          [multiple]="true" accept="image/*" [maxFileSize]="1000000">
+            <p-fileUpload
+                name="demo[]"
+                url="./upload.php"
+                (onUpload)="onUpload($event)"
+                [multiple]="true"
+                accept="image/*"
+                [maxFileSize]="1000000"
+            >
                 <ng-template pTemplate="content">
                     <ul *ngIf="uploadedFiles.length">
-                        <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                        <li *ngFor="let file of uploadedFiles">
+                            {{ file.name }} - {{ file.size }} bytes
+                        </li>
                     </ul>
                 </ng-template>
             </p-fileUpload>
 
             <h5>Basic</h5>
-            <p-fileUpload mode="basic" name="demo[]" url="./upload.php" accept="image/*" [maxFileSize]="1000000" (onUpload)="onBasicUpload()"></p-fileUpload>
-
+            <p-fileUpload
+                mode="basic"
+                name="demo[]"
+                url="./upload.php"
+                accept="image/*"
+                [maxFileSize]="1000000"
+                (onUpload)="onBasicUpload()"
+            ></p-fileUpload>
+        </div>
+    </div>
+</div> -->
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>Directories</h5>
+            <p-accordion>
+                <p-accordionTab
+                    *ngFor="let category of allFoldersSystem"
+                    [header]="category.category"
+                    [selected]="false"
+                    class="line-height-3 m-0"
+                    (click)="tempCategory = category.category"
+                >
+                    <div
+                        class="master-directory-create"
+                        (click)="createMasterDirectory(category.category)"
+                    >
+                        <p>
+                            <i class="pi pi-plus"></i>
+                            Create parent directory
+                        </p>
+                    </div>
+                    <div
+                        *ngFor="
+                            let masterfolder of category.folders;
+                            index as i
+                        "
+                    >
+                        <div class="flex folderList">
+                            <p
+                                class="mb-0 w-100"
+                                (click)="
+                                    getFolders(
+                                        masterfolder,
+                                        i,
+                                        category.category
+                                    )
+                                "
+                            >
+                                <i class="pi pi-folder"></i> {{ masterfolder }}
+                            </p>
+                            <p class="ms-auto mb-0 w-20">
+                                <i
+                                    class="pi pi-plus"
+                                    (click)="
+                                        createDirectory(
+                                            category.category,
+                                            masterfolder,
+                                            i
+                                        )
+                                    "
+                                ></i>
+                                <i
+                                    *ngIf="isAdmin"
+                                    class="pi pi-trash"
+                                    (click)="
+                                        deleteDirectory(
+                                            category.category,
+                                            masterfolder
+                                        )
+                                    "
+                                ></i>
+                            </p>
+                        </div>
+                        <div *ngIf="subfolderList[i].state">
+                            <div
+                                class="subfolderList flex"
+                                *ngFor="let folder of subfolderList[i].folders"
+                            >
+                                <p
+                                    class="mb-0 w-100"
+                                    (click)="
+                                        getImages(
+                                            category.category,
+                                            masterfolder,
+                                            folder
+                                        )
+                                    "
+                                >
+                                    <i class="pi pi-folder"></i> {{ folder }}
+                                </p>
+                                <p class="ms-auto mb-0">
+                                    <i
+                                        *ngIf="isAdmin"
+                                        class="pi pi-trash ms-5"
+                                        (click)="
+                                            deleteDirectory(
+                                                category.category,
+                                                masterfolder,
+                                                folder,
+                                                i
+                                            )
+                                        "
+                                    ></i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </p-accordionTab>
+            </p-accordion>
         </div>
     </div>
 </div>
+<p-dialog
+    [(visible)]="deleteProductsDialog"
+    header="Product Image"
+    [modal]="true"
+    [style]="{ width: '1200px' }"
+>
+    <div class="align-items-center justify-content-center">
+        <div class="grid mt-5 mx-auto">
+            <p-card
+                *ngFor="let image of allImages"
+                [header]="image.name"
+                [style]="{ width: '500px' }"
+                class="col-6"
+            >
+                <ng-template pTemplate="header">
+                    <img [alt]="image.name" [src]="image.url" />
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <div class="flex gap-3 mt-1">
+                        <p-button
+                            icon="pi pi-trash"
+                            severity="secondary"
+                            class="w-full"
+                            styleClass="w-full"
+                        />
+                    </div>
+                </ng-template>
+            </p-card>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <label for="image-upload" class="custom-file-upload p-button">
+            <i class="pi pi-plus"></i> Import Image
+        </label>
+        <input
+            id="image-upload"
+            type="file"
+            class="file-upload"
+            multiple
+            (change)="uploadFiles($event)"
+        />
+    </ng-template>
+</p-dialog>
+<p-dialog
+    [(visible)]="createdirectoryDialog"
+    header="Create Folder"
+    [modal]="true"
+    [style]="{ width: '350px' }"
+>
+    <div class="align-items-center justify-content-center">
+        <div class="grid mt-5 mx-auto">
+            <input
+                ngModel
+                #directoryName="ngModel"
+                type="text"
+                class="pi-input"
+                placeholder="Directory name"
+            />
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            icon="pi pi-check"
+            class="p-button-text"
+            label="Create directory"
+            (click)="confirmCreateDirectory(directoryName)"
+        ></button>
+    </ng-template>
+</p-dialog>

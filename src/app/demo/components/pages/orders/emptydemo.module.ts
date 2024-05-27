@@ -1,7 +1,6 @@
 import { NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmptyDemoComponent } from './emptydemo.component';
-import { CrudRoutingModule } from '../crud/crud-routing.module';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +16,12 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { EmptyDemoRoutingModule } from './emptydemo-routing.module';
+import { PanelsDemoModule } from '../../uikit/panels/panelsdemo.module';
+import { DividerModule } from 'primeng/divider';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { TabViewModule } from 'primeng/tabview';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @NgModule({
     imports: [
@@ -36,7 +41,11 @@ import { EmptyDemoRoutingModule } from './emptydemo-routing.module';
         RadioButtonModule,
         InputNumberModule,
         DialogModule,
+        DividerModule,
+        TabViewModule,
+        ConfirmPopupModule,
     ],
+    providers: [ConfirmationService, MessageService],
     declarations: [EmptyDemoComponent],
 })
 export class EmptyDemoModule {}

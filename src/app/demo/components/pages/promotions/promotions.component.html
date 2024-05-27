@@ -1,0 +1,145 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+
+            <p-table
+                #dt
+                [value]="notifications"
+                [columns]="selectedColumns"
+                responsiveLayout="scroll"
+                [rows]="30"
+                [scrollable]="true"
+                scrollHeight="500px"
+                [globalFilterFields]="[
+                    'email',
+                    'fullname',
+                    'textmessage',
+                    'subject',
+                    'topic'
+                ]"
+                [paginator]="true"
+                [rowsPerPageOptions]="[100, 200, 500]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedNotifications"
+                selectionMode="multiple"
+                [rowHover]="true"
+                dataKey="id"
+            >
+                <ng-template pTemplate="caption"
+                    ><div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <h5 class="m-0">Promotion Manage</h5>
+                        <p-button
+                            class="bg-primary"
+                            (click)="this.promotionDialog = true"
+                            >+ New Promotion</p-button
+                        >
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search..."
+                                class="w-full sm:w-auto"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th
+                            *ngFor="let field of cols"
+                            [pSortableColumn]="field.field"
+                        >
+                            {{ field.header }}
+                            <p-sortIcon [field]="field.field"></p-sortIcon>
+                            <p-columnFilter
+                                type="text"
+                                [field]="field.field"
+                                display="menu"
+                                class="ml-auto"
+                            ></p-columnFilter>
+                        </th>
+                        <th alignFrozen="right" pFrozenColumn [frozen]="true">
+                            Details
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-notification>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox
+                                [value]="notification"
+                            ></p-tableCheckbox>
+                        </td>
+
+                        <td style="min-width: 15rem" *ngFor="let field of cols">
+                            <span class="p-column-title">{{
+                                field.header
+                            }}</span>
+                            <span
+                                *ngIf="field.field != 'price'; else pricesField"
+                            >
+                                {{ notification[field.field] }}
+                            </span>
+                            <ng-template #pricesField>
+                                {{
+                                    notification[field.field] | currency : "USD"
+                                }}
+                            </ng-template>
+                        </td>
+
+                        <td alignFrozen="right" pFrozenColumn [frozen]="true">
+                            <div class="flex">
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-eye"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="openDetails(notification)"
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-dialog
+    [(visible)]="promotionDialog"
+    [style]="{ width: '950px' }"
+    header="Product Details"
+    [modal]="true"
+    class="p-fluid"
+>
+    <ng-template pTemplate="content">
+        <app-promo-form [promo]="promotionSelected"></app-promo-form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            label="Cancel"
+            icon="pi pi-times"
+            class="p-button-text"
+            (click)="hideDialog()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            label="Save"
+            icon="pi pi-check"
+            class="p-button-text"
+            (click)="savePromotion()"
+        ></button>
+    </ng-template>
+</p-dialog>

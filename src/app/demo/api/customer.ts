@@ -18,3 +18,33 @@ export interface Customer {
     activity?: number;
     representative?: Representative;
 }
+export interface Users {
+    id: string;
+    name: string;
+    surname: string;
+    email: string;
+    phone: string;
+    company: string;
+    profession: string;
+    userType: string;
+    date: string;
+}
+export interface Notification {
+    id: string;
+    fullname: string;
+    subject: string;
+    topic: string;
+    email: string;
+    textmessage: string;
+    date: string;
+    status: number;
+}
+export interface Promotion {
+    event: string;
+    status: number;
+    products: string[];
+    eventLength: number;
+    eventCategory: string;
+    submmitedBy: string;
+    date: string;
+}

@@ -2,17 +2,10 @@
     <div class="col-12">
         <div class="card px-6 py-6">
             <p-toast></p-toast>
+
             <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
+                <ng-template pTemplate="left" *ngIf="isAdmin">
                     <div class="my-2">
-                        <button
-                            pButton
-                            pRipple
-                            label="New"
-                            icon="pi pi-plus"
-                            class="p-button-success mr-2"
-                            (click)="openNew()"
-                        ></button>
                         <button
                             pButton
                             pRipple
@@ -28,14 +21,27 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <p-fileUpload
-                        mode="basic"
-                        accept="image/*"
-                        [maxFileSize]="1000000"
-                        label="Import"
-                        chooseLabel="Import"
-                        class="mr-2 inline-block"
-                    ></p-fileUpload>
+                    <a
+                        [href]="url + 'classapi/files/BBDD.xlsx'"
+                        download="BBDD"
+                        pButton
+                        pRipple
+                        label="Tamplate"
+                        icon="pi pi-download"
+                        class="p-button-success mr-2"
+                    ></a>
+                    <label
+                        for="file-upload"
+                        class="custom-file-upload p-button"
+                    >
+                        <i class="pi pi-plus"></i> Import
+                    </label>
+                    <input
+                        id="file-upload"
+                        type="file"
+                        class="file-upload"
+                        (change)="uploadFile($event)"
+                    />
                     <button
                         pButton
                         pRipple
@@ -62,7 +68,7 @@
                     'stock'
                 ]"
                 [paginator]="true"
-                [rowsPerPageOptions]="[30, 50, 100]"
+                [rowsPerPageOptions]="[100, 200, 500]"
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedProducts"
@@ -92,9 +98,9 @@
                         <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                         </th>
-                        <th alignFrozen="right" pFrozenColumn [frozen]="true">
+                        <!-- <th alignFrozen="right" pFrozenColumn [frozen]="true">
                             Images
-                        </th>
+                        </th> -->
                         <th
                             *ngFor="let field of cols"
                             [pSortableColumn]="field.field"
@@ -109,7 +115,7 @@
                             ></p-columnFilter>
                         </th>
                         <th alignFrozen="right" pFrozenColumn [frozen]="true">
-                            Actions
+                            Edit
                         </th>
                     </tr>
                 </ng-template>
@@ -121,13 +127,14 @@
                             ></p-tableCheckbox>
                         </td>
 
-                        <td>
+                        <!-- <td>
                             <img
                                 [src]="
-                                    'http://localhost/classapi/images/' +
+                                    url +
+                                    'classapi/images/' +
                                     product.category +
                                     '/products/' +
-                                    product.reference
+                                    product.parentRef
                                         .replaceAll(' ', '')
                                         .substr(0, 8) +
                                     '/' +
@@ -140,7 +147,7 @@
                                 width="100"
                                 class="shadow-4"
                             />
-                        </td>
+                        </td> -->
 
                         <td style="min-width: 15rem" *ngFor="let field of cols">
                             <span class="p-column-title">{{
@@ -164,13 +171,6 @@
                                     icon="pi pi-pencil"
                                     class="p-button-rounded p-button-success mr-2"
                                     (click)="editProduct(product)"
-                                ></button>
-                                <button
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-trash"
-                                    class="p-button-rounded p-button-warning"
-                                    (click)="deleteProduct(product)"
                                 ></button>
                             </div>
                         </td>

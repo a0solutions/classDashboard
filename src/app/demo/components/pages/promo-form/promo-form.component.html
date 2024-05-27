@@ -1,0 +1,63 @@
+<div class="field">
+    <label for="name">Promotion Name</label>
+    <input
+        type="text"
+        pInputText
+        id="name"
+        [(ngModel)]="promo.event"
+        required
+        autofocus
+        [ngClass]="{
+            'ng-invalid ng-dirty': submitted && !promo.event
+        }"
+    />
+    <small class="ng-dirty ng-invalid" *ngIf="submitted && !promo.event"
+        >Name is required.</small
+    >
+</div>
+<div class="formgrid grid">
+    <div class="field col-6">
+        <label for="name">Event Lenght (days)</label>
+        <input
+            type="number"
+            pInputText
+            id="name"
+            [(ngModel)]="promo.eventLength"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !promo.eventLength
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !promo.eventLength"
+            >Name is required.</small
+        >
+    </div>
+    <div class="field col-6">
+        <label>Event Category</label>
+        <select [(ngModel)]="promo.eventCategory" class="form-select">
+            <option [value]="undefined">Select Category</option>
+            <option
+                *ngFor="let category of categories"
+                [value]="category.value"
+            >
+                {{ category.name }}
+            </option>
+        </select>
+    </div>
+</div>
+<div class="field">
+    <label for="products">Products</label>
+    <textarea
+        id="products"
+        pInputTextarea
+        [(ngModel)]="promo.products"
+        required
+        rows="3"
+        cols="20"
+    ></textarea>
+</div>
+
+<hr />

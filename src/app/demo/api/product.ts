@@ -15,6 +15,8 @@ export interface Product {
     frameMaterial: string;
     materialDetail: string;
     upholstered: number;
+    upholsteryMaterial: number;
+    upholsteryFillMaterial: number;
     price: number;
     oldprice: number;
     minimunOrder: number;
@@ -46,4 +48,8 @@ export interface Product {
     new: number;
     offer: number;
     membersOnly: number;
+    counterTopIncluded: string;
+    counterMaterial: string;
+    sinkIncluded: string;
+    sinkType: string;
 }

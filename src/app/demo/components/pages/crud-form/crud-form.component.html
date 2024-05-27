@@ -26,75 +26,172 @@
         cols="20"
     ></textarea>
 </div>
-<div class="field">
-    <label for="status">Inventory Status</label>
-    <p-dropdown
-        [(ngModel)]="product.stock"
-        inputId="stock"
-        optionValue="label"
-        [options]="true"
-        placeholder="Select"
-    >
-        <ng-template pTemplate="selectedItem">
-            <span
-                *ngIf="product && product.stock"
-                [class]="
-                    'product-badge status-' +
-                    product.stock.toString().toLowerCase()
-                "
-                >{{ product.stock }}</span
-            >
-        </ng-template>
-        <ng-template let-option pTemplate="item">
-            <span [class]="'product-badge status-' + option.value">{{
-                option.label
-            }}</span>
-        </ng-template>
-    </p-dropdown>
-</div>
-
+<hr />
 <div class="field">
     <label class="mb-3">Category</label>
+
     <div class="formgrid grid">
-        <div class="field-radiobutton col-6">
-            <p-radioButton
-                id="category1"
-                name="category"
-                value="Accessories"
+        <div
+            class="field-radiobutton col-3"
+            *ngFor="let category of allCategories"
+        >
+            <input
                 [(ngModel)]="product.category"
-            ></p-radioButton>
-            <label for="category1">Accessories</label>
-        </div>
-        <div class="field-radiobutton col-6">
-            <p-radioButton
-                id="category2"
+                type="radio"
+                [id]="category"
                 name="category"
-                value="Clothing"
-                [(ngModel)]="product.category"
-            ></p-radioButton>
-            <label for="category2">Clothing</label>
-        </div>
-        <div class="field-radiobutton col-6">
-            <p-radioButton
-                id="category3"
-                name="category"
-                value="Electronics"
-                [(ngModel)]="product.category"
-            ></p-radioButton>
-            <label for="category3">Electronics</label>
-        </div>
-        <div class="field-radiobutton col-6">
-            <p-radioButton
-                id="category4"
-                name="category"
-                value="Fitness"
-                [(ngModel)]="product.category"
-            ></p-radioButton>
-            <label for="category4">Fitness</label>
+                [value]="category"
+                (change)="changeCategorie(category)"
+            />
+            <label [for]="category">{{ category }}</label>
         </div>
     </div>
 </div>
+<hr />
+<div class="field">
+    <label class="mb-3">Type</label>
 
+    <div class="formgrid grid">
+        <div
+            class="field-radiobutton col-3"
+            *ngFor="let subcategory of subcategories"
+        >
+            <input
+                [(ngModel)]="product.subcategory"
+                type="radio"
+                [id]="subcategory"
+                name="subcategory"
+                [value]="subcategory"
+            />
+            <label [for]="subcategory">{{ subcategory }}</label>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="formgrid grid">
+    <div class="field col-4">
+        <label for="name">Parent Reference</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.parentRef"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.parentRef
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.parentRef"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label for="name">Sku</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.reference"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.reference
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.reference"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label for="name">Size</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.size"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.size
+            }"
+        />
+        <small class="ng-dirty ng-invalid" *ngIf="submitted && !product.size"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label for="name">Sets</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.sets"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.sets
+            }"
+        />
+        <small class="ng-dirty ng-invalid" *ngIf="submitted && !product.sets"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label for="name">Stock</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.stock"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.stock
+            }"
+        />
+        <small class="ng-dirty ng-invalid" *ngIf="submitted && !product.stock"
+            >Input is required.</small
+        >
+    </div>
+</div>
+<hr />
+<div class="formgrid grid">
+    <div class="field col-6">
+        <label for="name">Color</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.color"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.color
+            }"
+        />
+        <small class="ng-dirty ng-invalid" *ngIf="submitted && !product.color"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-6">
+        <label for="name">Detail Color</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.detailColor"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.detailColor
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.detailColor"
+            >Input is required.</small
+        >
+    </div>
+</div>
+<hr />
 <div class="formgrid grid">
     <div class="field col">
         <label for="price">Price</label>
@@ -105,5 +202,481 @@
             currency="USD"
             locale="en-US"
         ></p-inputNumber>
+    </div>
+</div>
+<hr />
+<div class="formgrid grid">
+    <div class="field col">
+        <label>Comfort Level</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.comfortLevel"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.comfortLevel
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.comfortLevel"
+            >Input is required.</small
+        >
+    </div>
+</div>
+<hr />
+<div class="formgrid grid">
+    <div class="field col-3">
+        <label>Country Manufacture</label>
+        <input
+            type="text"
+            pInputText
+            id="parentRef"
+            [(ngModel)]="product.countryManufacture"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.countryManufacture
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.countryManufacture"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-3">
+        <label for="name">Headboard Head</label>
+        <input
+            type="text"
+            pInputText
+            id="parentRef"
+            [(ngModel)]="product.headboardHeight"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.headboardHeight
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.headboardHeight"
+            >Input is required.</small
+        >
+    </div>
+
+    <div class="field col-3">
+        <label for="name">Frame Material</label>
+        <input
+            type="text"
+            pInputText
+            id="parentRef"
+            [(ngModel)]="product.frameMaterial"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.frameMaterial
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.frameMaterial"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-3">
+        <label for="name">Material Detail</label>
+        <input
+            type="text"
+            pInputText
+            id="parentRef"
+            [(ngModel)]="product.materialDetail"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.materialDetail
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.materialDetail"
+            >Input is required.</small
+        >
+    </div>
+</div>
+<div class="formgrid grid">
+    <div class="field col-4">
+        <label>Upholstered</label>
+
+        <select [(ngModel)]="product.upholstered" class="form-select">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="">N/A</option>
+        </select>
+    </div>
+    <div class="field col-4">
+        <label>Upholstery Material</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.upholsteryMaterial"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.upholsteryMaterial
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.upholsteryMaterial"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label>Upholstery Fill Material</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.upholsteryFillMaterial"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty':
+                    submitted && !product.upholsteryFillMaterial
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.upholsteryFillMaterial"
+            >Input is required.</small
+        >
+    </div>
+</div>
+<hr />
+<div class="formgrid grid">
+    <div class="field col-6">
+        <label>Add Feature Bullet</label>
+        <input ngModel #bullet="ngModel" type="text" pInputText required />
+        <button
+            pButton
+            pRipple
+            type="button"
+            label="Add"
+            (click)="addBullet(bullet)"
+        ></button>
+    </div>
+    <div class="field col-6">
+        <label>Upholstery Fill Material</label>
+        <div class="d-flex" *ngFor="let bullet of featureBullets">
+            <p class="bullet">{{ bullet }}</p>
+            <p class="close-button" (click)="deleteBullet(bullet)">
+                <i class="pi pi-times"></i>
+            </p>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="formgrid grid">
+    <div class="field col-4">
+        <label>Ship Type</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.shipType"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.shipType
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.shipType"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label>Display Sets</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.displaySets"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.displaySets
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.displaySets"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label>Number of Boxes</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.numberBoxes"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.numberBoxes
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.numberBoxes"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-3">
+        <label>Overall Width</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.overallWidth"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.overallWidth
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.overallWidth"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-3">
+        <label>Overall Height</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.overallHeight"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.overallHeight
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.overallHeight"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-3">
+        <label>Overall Lenght</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.overallLenght"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.overallLenght
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.overallLenght"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-3">
+        <label>Overall Weight</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.overallWeight"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.overallWeight
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.overallWeight"
+            >Input is required.</small
+        >
+    </div>
+</div>
+<hr />
+<div class="formgrid grid">
+    <div class="field col-3">
+        <label>Installation Required</label>
+        <select [(ngModel)]="product.installationRequired" class="form-select">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="">N/A</option>
+            <option value="None">None</option>
+        </select>
+    </div>
+    <div class="field col-3">
+        <label>Time Assembly</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.timeAssembly"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.timeAssembly
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.timeAssembly"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-3">
+        <label>Assembly Level</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.levelAssembly"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.levelAssembly
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.levelAssembly"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-3">
+        <label>Aditional Tools</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.aditionalTools"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.aditionalTools
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.aditionalTools"
+            >Input is required.</small
+        >
+    </div>
+</div>
+<hr />
+<div class="formgrid grid">
+    <div class="field col-6">
+        <label>Commercial Warranty</label>
+        <select [(ngModel)]="product.commercialWarranty" class="form-select">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+    </div>
+    <div class="field col-6">
+        <label>Product Warranty</label>
+        <select [(ngModel)]="product.productWarranty" class="form-select">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+    </div>
+    <div class="field col-4">
+        <label>Warranty lenght</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.levelAssembly"
+            required
+            autofocus
+            placeholder="ex:2 Years"
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.levelAssembly
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.levelAssembly"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label>Full or Limited Warranty</label>
+        <select [(ngModel)]="product.fullOrLimitedWarranty" class="form-select">
+            <option value="Full">Full</option>
+            <option value="Limited">Limited</option>
+        </select>
+    </div>
+    <div class="field col-4">
+        <label>Warranty Details</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.warrantyDetails"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.warrantyDetails
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.warrantyDetails"
+            >Input is required.</small
+        >
+    </div>
+</div>
+<hr />
+<div class="formgrid grid" *ngIf="product.category == 'Bathroom'">
+    <div class="field col-3">
+        <label>Countertop Included</label>
+        <select [(ngModel)]="product.counterTopIncluded" class="form-select">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+    </div>
+    <div class="field col-3">
+        <label>Counter Material</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.counterMaterial"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.counterMaterial
+            }"
+        />
+    </div>
+    <div class="field col-3">
+        <label>Sink Included</label>
+        <select [(ngModel)]="product.sinkIncluded" class="form-select">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+    </div>
+    <div class="field col-3">
+        <label>Sink Type</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.sinkType"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.sinkType
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.sinkType"
+            >Input is required.</small
+        >
     </div>
 </div>

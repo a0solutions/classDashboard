@@ -2,6 +2,8 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { AppLayoutComponent } from './layout/app.layout.component';
+import { AuthGuard } from 'src/environments/authGuard.service';
+import { OrdersService } from './demo/service/orders.service';
 
 @NgModule({
     imports: [
@@ -61,6 +63,7 @@ import { AppLayoutComponent } from './layout/app.layout.component';
                                 ).then((m) => m.PagesModule),
                         },
                     ],
+                    canActivate: [AuthGuard],
                 },
                 {
                     path: 'auth',

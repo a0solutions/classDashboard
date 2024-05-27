@@ -1,0 +1,686 @@
+<div class="card">
+    <p-toast></p-toast>
+    <p-confirmPopup key="confirm2"></p-confirmPopup>
+    <p-tabView orientation="left">
+        <p-tabPanel
+            [header]="'Active Orders ' + ordersList.length"
+            class="line-height-3 m-0"
+        >
+            <p-table
+                #dt
+                [value]="ordersList"
+                dataKey="order"
+                responsiveLayout="scroll"
+                [tableStyle]="{ 'min-width': '60rem' }"
+                [scrollable]="true"
+                scrollHeight="600px"
+                [globalFilterFields]="[
+                    'trackingNumber',
+                    'order',
+                    'shippingCompany'
+                ]"
+                [paginator]="true"
+                [rows]="30"
+                [rowsPerPageOptions]="[30, 50, 100]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                ><ng-template pTemplate="caption">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <h5 class="m-0">Manage Orders</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search..."
+                                class="w-full sm:w-auto"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 5rem"></th>
+                        <th>Order ID</th>
+                        <th pSortableColumn="date">
+                            Date <p-sortIcon field="date"></p-sortIcon>
+                        </th>
+                        <th>Amount</th>
+                        <th>Items</th>
+                        <th>Tracking Number</th>
+                        <th pSortableColumn="shippingCompany">
+                            Shipping Company<p-sortIcon
+                                field="shippingCompany"
+                            ></p-sortIcon>
+                        </th>
+                        <th>Status</th>
+                        <th>Information</th>
+                        <th>Notes</th>
+                        <th>Hide</th>
+                    </tr>
+                </ng-template>
+                <ng-template
+                    pTemplate="body"
+                    let-product
+                    let-expanded="expanded"
+                    let-index
+                >
+                    <tr
+                        [class]="
+                            expanded && placeStatusClass(product) != 'canceled'
+                                ? 'surface-100'
+                                : !expanded
+                                ? 'surface-0'
+                                : 'surface-400'
+                        "
+                    >
+                        <td>
+                            <button
+                                type="button"
+                                pButton
+                                pRipple
+                                [pRowToggler]="product"
+                                class="p-button-text p-button-rounded p-button-plain"
+                                [icon]="
+                                    expanded
+                                        ? 'pi pi-chevron-down'
+                                        : 'pi pi-chevron-right'
+                                "
+                            ></button>
+                        </td>
+                        <td>{{ product.order }}</td>
+                        <td>{{ product.date }}</td>
+                        <td>{{ product.amount | currency : "USD" }}</td>
+                        <td>{{ product.items }}</td>
+                        <td>
+                            <div class="col-12 mb-2 lg:col-4 lg:mb-0 d-flex">
+                                <span class="p-input-icon-right">
+                                    <input
+                                        ngModel
+                                        type="text"
+                                        pInputText
+                                        #trackingNumber
+                                        name="tracking"
+                                        placeholder="Tracking number"
+                                        [ngModel]="product.trackingNumber"
+                                    /><i
+                                        class="pi pi-send"
+                                        (click)="
+                                            updateTracking(
+                                                product.order,
+                                                trackingNumber,
+                                                $event
+                                            )
+                                        "
+                                    ></i>
+                                </span>
+                            </div>
+                        </td>
+                        <td style="position: relative">
+                            <select
+                                [ngModel]="product.shippingCompany"
+                                #company
+                                name="shippingCompany"
+                                (change)="
+                                    updateComany(product.order, company, $event)
+                                "
+                                class="w-100"
+                            >
+                                <option value="">Select Company</option>
+                                <option
+                                    *ngFor="let company of companiesShipping"
+                                    [value]="company"
+                                >
+                                    {{ company }}
+                                </option>
+                            </select>
+                            <p class="textOverCompany">
+                                <span class="p-input-icon-right">
+                                    <input
+                                        ngModel
+                                        type="text"
+                                        pInputText
+                                        #companyText
+                                        name="shippingCompany"
+                                        placeholder="Shipping Company"
+                                        [ngModel]="product.shippingCompany"
+                                        style="width: 100%"
+                                    /><i
+                                        class="pi pi-send"
+                                        (click)="
+                                            updateComany(
+                                                product.order,
+                                                companyText,
+                                                $event
+                                            )
+                                        "
+                                    ></i>
+                                </span>
+                            </p>
+                        </td>
+                        <td>
+                            <select
+                                [ngModel]="placeStatusClass(product)"
+                                #status
+                                class="{{
+                                    placeStatusClass(product)
+                                }} p-2 p-button-secondary"
+                                (change)="
+                                    updateStatus(product.order, status, $event)
+                                "
+                                *ngIf="isAdmin; else datoStatus"
+                            >
+                                <optgroup label="Placed" class="optionGroup">
+                                    <option class="p-3" value="placed">
+                                        Placed
+                                    </option>
+                                </optgroup>
+                                <optgroup label="Status" class="optionGroup">
+                                    <option class="p-3" value="atelier">
+                                        Atelier
+                                    </option>
+                                    <option class="p-3" value="oceanic">
+                                        Oceanic
+                                    </option>
+                                    <option class="p-3" value="finale">
+                                        Finale
+                                    </option>
+                                    <option class="p-3" value="roadshow">
+                                        Roadshow
+                                    </option>
+                                </optgroup>
+                                <optgroup label="Clousing" class="optionGroup">
+                                    <option class="p-3" value="delivered">
+                                        Delivered
+                                    </option>
+                                    <option class="p-3" value="canceled">
+                                        Canceled
+                                    </option>
+                                </optgroup>
+                            </select>
+                            <ng-template #datoStatus
+                                ><p
+                                    class="{{
+                                        placeStatusClass(product)
+                                    }} p-2 p-button-secondary"
+                                >
+                                    {{ placeStatusClass(product) | uppercase }}
+                                </p></ng-template
+                            >
+                        </td>
+                        <td>
+                            <button
+                                (click)="getInformation(product)"
+                                type="button"
+                                label="Danger"
+                                class="p-element p-ripple p-button-primary p-button-text p-button p-component"
+                                ng-reflect-label="Danger"
+                            >
+                                <span
+                                    class="p-button-label pi pi-info-circle"
+                                ></span
+                                ><span class="p-ink"></span>
+                            </button>
+                        </td>
+                        <td>
+                            <p-button
+                                (click)="getNotes(product.order)"
+                                label="Notes"
+                                icon="pi pi-pencil"
+                                [badge]="numberOfNotes(product.order)"
+                                badgeClass="p-badge-danger"
+                                outlined="true"
+                            ></p-button>
+                        </td>
+                        <td>
+                            <button
+                                (click)="hideOrder(product.order)"
+                                type="button"
+                                label="Danger"
+                                class="p-element p-ripple p-button-danger p-button-text p-button p-component"
+                                ng-reflect-label="Danger"
+                            >
+                                <span
+                                    class="p-button-label pi pi-eye-slash"
+                                ></span
+                                ><span class="p-ink"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-product>
+                    <tr class="w-100">
+                        <td colspan="10" class="px-3 py-0">
+                            <div class="px-3 py-0">
+                                <p-table
+                                    [value]="product.cartProducts"
+                                    dataKey="reference"
+                                    class="w-100"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <tr class="surface-100">
+                                            <th>sku</th>
+                                            <th>Name</th>
+                                            <th>Sold Price</th>
+                                            <th>Amount</th>
+                                            <th>Cetegory</th>
+                                            <th>Product</th>
+                                            <th>Colors</th>
+                                            <th>Sets</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-order>
+                                        <tr>
+                                            <td>
+                                                {{ order.product.reference }}
+                                            </td>
+                                            <td>{{ order.product.name }}</td>
+                                            <td>
+                                                {{
+                                                    order.product.price
+                                                        | currency : "USD"
+                                                }}
+                                            </td>
+                                            <td>
+                                                {{ order.count }}
+                                            </td>
+                                            <td>
+                                                {{ order.product.category }}
+                                            </td>
+                                            <td>
+                                                {{ order.product.subcategory }}
+                                            </td>
+                                            <td>
+                                                {{ order.product.color }} /
+                                                {{ order.product.detailColor }}
+                                            </td>
+                                            <td>
+                                                {{ order.product.sets }}
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="emptymessage">
+                                        <tr>
+                                            <td colspan="6">
+                                                There are no order for this
+                                                product yet.
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel
+            [header]="'Hidden Orders ' + hideList.length"
+            class="line-height-3 m-0"
+        >
+            <p-table
+                [value]="hideList"
+                dataKey="order"
+                [tableStyle]="{ 'min-width': '60rem' }"
+            >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 5rem"></th>
+                        <th pSortableColumn="OrderNumber">
+                            Order ID
+                            <p-sortIcon field="orderNumber"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="date">
+                            Date <p-sortIcon field="date"></p-sortIcon>
+                        </th>
+                        <th>Amount</th>
+                        <th>Items</th>
+                        <th pSortableColumn="trskingNumber">
+                            Tracking Number
+                            <p-sortIcon field="trskingNumber"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="shippingCompany">
+                            Shipping Company
+                        </th>
+                        <th pSortableColumn="Status">
+                            Status <p-sortIcon field="Status"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Status">
+                            Notes <p-sortIcon field="Status"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="hide">
+                            Show <p-sortIcon field="hide"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template
+                    pTemplate="body"
+                    let-product
+                    let-expanded="expanded"
+                >
+                    <tr
+                        [class]="
+                            expanded && placeStatusClass(product) != 'canceled'
+                                ? 'surface-100'
+                                : !expanded
+                                ? 'surface-0'
+                                : 'surface-400'
+                        "
+                    >
+                        <td>
+                            <button
+                                type="button"
+                                pButton
+                                pRipple
+                                [pRowToggler]="product"
+                                class="p-button-text p-button-rounded p-button-plain"
+                                [icon]="
+                                    expanded
+                                        ? 'pi pi-chevron-down'
+                                        : 'pi pi-chevron-right'
+                                "
+                            ></button>
+                        </td>
+                        <td>{{ product.order }}</td>
+                        <td>{{ product.date }}</td>
+                        <td>{{ product.amount | currency : "USD" }}</td>
+                        <td>{{ product.items }}</td>
+                        <td>
+                            <div class="col-12 mb-2 lg:col-4 lg:mb-0">
+                                <span class="p-input-icon-right">
+                                    <input
+                                        type="text"
+                                        pInputText
+                                        placeholder="Tracking number"
+                                        [(ngModel)]="product.trackingNumber"
+                                        disabled
+                                    />
+                                    <i class="pi pi-search"></i>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <select
+                                ngModel
+                                #company
+                                name="shippingCompany"
+                                class="p-2 text-danger w-100"
+                                [ngModel]="product.shippingCompany"
+                                (change)="
+                                    updateComany(product.order, company, $event)
+                                "
+                                [disabled]="!isAdmin"
+                            >
+                                <option value="">Shipping company</option>
+                                <option value="FedEx">FedEx</option>
+                                <option value="DHL">DHL</option>
+                                <option value="USPS">USPS</option>
+                            </select>
+                        </td>
+                        <td>
+                            <p
+                                class="{{
+                                    placeStatusClass(product)
+                                }} p-2 p-button-secondary"
+                            >
+                                {{ placeStatusClass(product) | uppercase }}
+                            </p>
+                        </td>
+                        <td>
+                            <p-button
+                                (click)="getNotes(product.order)"
+                                label="Notes"
+                                icon="pi pi-pencil"
+                                [badge]="numberOfNotes(product.order)"
+                                badgeClass="p-badge-danger"
+                                outlined="true"
+                            ></p-button>
+                        </td>
+                        <td>
+                            <button
+                                (click)="hideOrder(product.order)"
+                                type="button"
+                                label="Danger"
+                                class="p-element p-ripple p-button-danger p-button-text p-button p-component"
+                                ng-reflect-label="Danger"
+                            >
+                                <span class="p-button-label pi pi-eye"></span
+                                ><span class="p-ink"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-product>
+                    <tr class="w-100">
+                        <td colspan="7" class="px-3 py-0">
+                            <div class="px-3">
+                                <p-table
+                                    [value]="product.cartProducts"
+                                    dataKey="reference"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <tr class="surface-100">
+                                            <th>sku</th>
+                                            <th>Name</th>
+                                            <th>Sold Price</th>
+                                            <th>Amount</th>
+                                            <th>Cetegory</th>
+                                            <th>Product</th>
+                                            <th>Colors</th>
+                                            <th>Sets</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-order>
+                                        <tr>
+                                            <td>
+                                                {{ order.product.reference }}
+                                            </td>
+                                            <td>{{ order.product.name }}</td>
+                                            <td>
+                                                {{
+                                                    order.product.price
+                                                        | currency : "USD"
+                                                }}
+                                            </td>
+                                            <td>
+                                                {{ order.count }}
+                                            </td>
+                                            <td>
+                                                {{ order.product.category }}
+                                            </td>
+                                            <td>
+                                                {{ order.product.subcategory }}
+                                            </td>
+                                            <td>
+                                                {{ order.product.color }} /
+                                                {{ order.product.detailColor }}
+                                            </td>
+                                            <td>
+                                                {{ order.product.sets }}
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="emptymessage">
+                                        <tr>
+                                            <td colspan="6">
+                                                There are no order for this
+                                                product yet.
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+<p-dialog
+    [(visible)]="deleteNoteDialog"
+    [style]="{ width: '950px' }"
+    header="Notes manage"
+    [modal]="true"
+    class="p-fluid"
+>
+    <ng-template pTemplate="content">
+        <div class="grid">
+            <div class="col-8 align-items-center justify-content-center">
+                <div *ngFor="let note of allNotes">
+                    <p-divider align="left">
+                        <span class="p-tag">{{ note.user }}</span>
+                    </p-divider>
+                    <p class="line-height-3 m-0">
+                        {{ note.note }}<br /><br /><small>{{
+                            note.date
+                        }}</small>
+                    </p>
+                </div>
+            </div>
+            <div class="col-4 sticky-top">
+                <form
+                    ngForm
+                    #noteForm="ngForm"
+                    class="mt-5"
+                    (submit)="addNote(noteForm)"
+                >
+                    <textarea
+                        ngModel
+                        rows="5"
+                        cols="30"
+                        placeholder="Your note"
+                        name="newNote"
+                        pInputTextarea
+                        #newNote
+                    ></textarea>
+                    <button
+                        pButton
+                        pRipple
+                        type="submit"
+                        label="Send new note"
+                        class="p-button-raised"
+                    ></button>
+                </form>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog
+    [(visible)]="deleteInformationDialog"
+    [style]="{ width: '650px' }"
+    header="Order Information"
+    [modal]="true"
+    class="p-fluid"
+>
+    <ng-template pTemplate="content">
+        <div class="grid">
+            <div class="col-6 align-items-center justify-content-center">
+                <h5>Billing Information</h5>
+                <p>
+                    <strong>Name: </strong
+                    >{{ informationOrder.billing.billingName }}
+                </p>
+                <p>
+                    <strong>Surname: </strong
+                    >{{ informationOrder.billing.billingSurname }}
+                </p>
+                <p>
+                    <strong>Phone: </strong
+                    >{{ informationOrder.billing.billingPhone }}
+                </p>
+                <p>
+                    <strong>Email: </strong
+                    >{{ informationOrder.billing.billingEmail }}
+                </p>
+                <p>
+                    <strong>Address: </strong
+                    >{{
+                        informationOrder.billing.billingAddress +
+                            " " +
+                            informationOrder.billing.billingAddress2
+                    }}
+                </p>
+                <p>
+                    <strong>State: </strong
+                    >{{ informationOrder.billing.billingState }}
+                </p>
+                <p>
+                    <strong>City: </strong
+                    >{{ informationOrder.billing.billingCity }}
+                </p>
+                <p>
+                    <strong>Zip: </strong
+                    >{{ informationOrder.billing.billingZip }}
+                </p>
+                <p>
+                    <strong>Country: </strong
+                    >{{ informationOrder.billing.billingCountry }}
+                </p>
+            </div>
+            <div class="col-6 align-items-center justify-content-center">
+                <h5>Shipping Information</h5>
+                <p>
+                    <strong>Name: </strong
+                    >{{ informationOrder.shipping.shippingName }}
+                </p>
+                <p>
+                    <strong>Surname: </strong
+                    >{{ informationOrder.shipping.shippingSurname }}
+                </p>
+                <p>
+                    <strong>Address: </strong
+                    >{{
+                        informationOrder.shipping.shippingAddress +
+                            " " +
+                            informationOrder.shipping.shippingAddress2
+                    }}
+                </p>
+                <p>
+                    <strong>State: </strong
+                    >{{ informationOrder.shipping.shippingState }}
+                </p>
+                <p>
+                    <strong>Zip: </strong
+                    >{{ informationOrder.shipping.shippingZip }}
+                </p>
+                <p>
+                    <strong>Country: </strong
+                    >{{ informationOrder.shipping.shippingCountry }}
+                </p>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog
+    [(visible)]="deleteHideDialog"
+    header="Confirm"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+>
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to hide the selected order?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            icon="pi pi-times"
+            class="p-button-text"
+            label="No"
+            (click)="deleteHideDialog = false"
+        ></button>
+        <button
+            pButton
+            pRipple
+            icon="pi pi-check"
+            class="p-button-text"
+            label="Yes"
+            (click)="confirmhideSelected()"
+        ></button>
+    </ng-template>
+</p-dialog>
