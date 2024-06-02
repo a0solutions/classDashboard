@@ -18,7 +18,7 @@ export interface Product {
     upholsteryMaterial: number;
     upholsteryFillMaterial: number;
     price: number;
-    oldprice: number;
+    promoPrice: number;
     minimunOrder: number;
     size: string;
     sets: string;

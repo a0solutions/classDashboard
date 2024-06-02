@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { take } from 'rxjs';
 import { TokenService } from 'src/app/demo/service/token.service';
 import { urls } from 'src/environments/environment';
 interface index {
@@ -34,7 +35,8 @@ export class FileDemoComponent {
     constructor(
         private messageService: MessageService,
         private Imagenes: HttpClient,
-        private token: TokenService
+        private token: TokenService,
+        private confirmation: ConfirmationService
     ) {}
     ngOnInit() {
         this.getAllFolders();
@@ -43,14 +45,16 @@ export class FileDemoComponent {
         });
     }
     getAllFolders() {
-        this.Imagenes.get(this.url + '?action=folder').subscribe((x: any) => {
-            this.allFoldersSystem = x;
-            this.allFoldersSystem.forEach((y) => {
-                y.folders.forEach((element) => {
-                    this.subfolderList.push({ state: false, folders: [] });
+        this.Imagenes.get(this.url + '?action=folder')
+            .pipe(take(1))
+            .subscribe((x: any) => {
+                this.allFoldersSystem = x;
+                this.allFoldersSystem.forEach((y) => {
+                    y.folders.forEach((element) => {
+                        this.subfolderList.push({ state: false, folders: [] });
+                    });
                 });
             });
-        });
     }
     onUpload(event: any) {
         for (const file of event.files) {
@@ -240,5 +244,40 @@ export class FileDemoComponent {
     }
     consoleLog(x: any) {
         console.log(x);
+    }
+    deleteImage(image: images) {
+        let actualToken = this.token.getValidateToken();
+        this.Imagenes.delete(
+            this.url +
+                '?validate=' +
+                actualToken +
+                '&action=deleteImage&image=' +
+                image.url
+        ).subscribe((x) => {
+            x ? this.allImages.splice(this.allImages.indexOf(image), 1) : null;
+        });
+    }
+    confirm(
+        category: string,
+        masterfolder: string,
+        folder?: string,
+        i?: number
+    ) {
+        this.confirmation.confirm({
+            key: 'confirm',
+            target: event.target || new EventTarget(),
+            message: 'Are you sure that you want to proceed?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.deleteDirectory(category, masterfolder, folder, i);
+            },
+            reject: () => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Rejected',
+                    detail: 'You have rejected',
+                });
+            },
+        });
     }
 }

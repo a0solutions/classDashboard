@@ -12,6 +12,7 @@ import {
 import { LoginService } from '../../service/login.service';
 import { NotificationsService } from '../../service/notifications.service';
 import { Notification, Users } from '../../api/customer';
+import { SelectButton } from 'primeng/selectbutton';
 interface BestSellers {
     reference: string;
     name: string;
@@ -30,6 +31,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     chartOptions: any;
     recentSales: order[] = [];
     subscription!: Subscription;
+    notificationSubscription: Subscription;
+    usersSubscription: Subscription;
+    ordersSubscription: Subscription;
+    productsSubscription: Subscription;
     orderNumber: number = 0;
     totalSold: number = 0;
     totalSoldThisMonth: number = 0;
@@ -55,10 +60,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.subscription = this.layoutService.configUpdate$.subscribe(() => {
             this.initChart();
         });
-    }
-
-    ngOnInit() {
-        this.notifications
+        this.notificationSubscription = this.notifications
             .getAllNotifications()
             .subscribe((x: Notification[]) => {
                 this.allNotifications = x;
@@ -69,20 +71,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.respondedNotifications =
                     x.length - this.unreadNotificationsNumber;
             });
-        this.users.getAllUsers().subscribe((x: Users[]) => {
-            this.totalUsers = x.length;
-            x.forEach((y) => {
-                this.isThisMonth(y.date)
-                    ? this.totalUsersThisMonth++
-                    : this.isLastMonth(y.date)
-                    ? this.totalUsersLastMonth++
-                    : null;
+        this.usersSubscription = this.users
+            .getAllUsers()
+            .subscribe((x: Users[]) => {
+                this.totalUsers = x.length;
+                x.forEach((y) => {
+                    this.isThisMonth(y.date)
+                        ? this.totalUsersThisMonth++
+                        : this.isLastMonth(y.date)
+                        ? this.totalUsersLastMonth++
+                        : null;
+                });
             });
-        });
-        this.orders.getAllOrders().subscribe({
+        this.ordersSubscription = this.orders.getAllOrders().subscribe({
             next: this.setAllValues.bind(this),
             error: console.log.bind(this),
         });
+    }
+
+    ngOnInit() {
         this.initChart();
         this.productService
             .getProductsSmall()
@@ -183,16 +190,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.chartData = {
             labels: [
                 'January',
+                'Febrary',
                 'March',
+                'April',
                 'May',
+                'June',
                 'July',
+                'August',
                 'Spetember',
+                'October',
+                'November',
                 'December',
             ],
             datasets: [
                 {
-                    label: 'First Dataset',
-                    data: [65, 59, 80, 300, 56, 55, 40],
+                    label: 'Current Year',
+                    data: [5, 30, 10, 1, 40, 45, 12, 103, 12, 45, 5, 12],
                     fill: false,
                     backgroundColor:
                         documentStyle.getPropertyValue('--bluegray-700'),
@@ -201,8 +214,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     tension: 0.4,
                 },
                 {
-                    label: 'Second Dataset',
-                    data: [28, 48, 40, 19, 86, 27, 90],
+                    label: 'Last Year',
+                    data: [15, 34, 18, 12, 49, 51, 19, 57, 25, 57, 51, 23],
                     fill: false,
                     backgroundColor:
                         documentStyle.getPropertyValue('--green-600'),
@@ -244,8 +257,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
+        this.subscription.unsubscribe();
+        this.notificationSubscription.unsubscribe();
+        this.usersSubscription.unsubscribe();
+        this.ordersSubscription.unsubscribe();
     }
 }

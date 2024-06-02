@@ -1,0 +1,163 @@
+<div class="grid">
+    <p-confirmPopup key="confirm"></p-confirmPopup>
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+
+            <p-table
+                #dt
+                [value]="users"
+                [columns]="selectedColumns"
+                responsiveLayout="scroll"
+                [rows]="10"
+                [scrollable]="true"
+                scrollHeight="500px"
+                [globalFilterFields]="[
+                    'id',
+                    'name',
+                    'surname',
+                    'email',
+                    'phone',
+                    'profession'
+                ]"
+                [paginator]="true"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedUsers"
+                selectionMode="multiple"
+                [rowHover]="true"
+                dataKey="id"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search..."
+                                class="w-full sm:w-auto"
+                            />
+                        </span>
+                        <div style="margin-left: auto">
+                            <button
+                                *ngIf="isAdmin"
+                                pButton
+                                pRipple
+                                label="Export Users"
+                                icon="pi pi-download"
+                                class="p-button-primary mx-3"
+                                (click)="exportExcel(users, 'users')"
+                            ></button>
+                            <button
+                                *ngIf="newsLetter.length != 0 && isAdmin"
+                                pButton
+                                pRipple
+                                label="Export Newsletters"
+                                icon="pi pi-download"
+                                class="p-button-primary"
+                                (click)="
+                                    exportExcel(newsLetter, 'userNewsLetter')
+                                "
+                            ></button>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 2rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th
+                            *ngFor="let field of cols"
+                            [pSortableColumn]="field.field"
+                        >
+                            {{ field.header }}
+                            <p-sortIcon [field]="field.field"></p-sortIcon>
+                            <p-columnFilter
+                                type="text"
+                                [field]="field.field"
+                                display="menu"
+                                class="ml-auto"
+                            ></p-columnFilter>
+                        </th>
+                        <th
+                            alignFrozen="right"
+                            pFrozenColumn
+                            [frozen]="true"
+                            *ngIf="isAdmin"
+                        >
+                            Delete
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="user"></p-tableCheckbox>
+                        </td>
+
+                        <td style="min-width: 15rem" *ngFor="let field of cols">
+                            <span class="p-column-title">{{
+                                field.header
+                            }}</span>
+
+                            <span
+                                *ngIf="field.field != 'userType'; else userType"
+                            >
+                                {{ user[field.field] }}
+                            </span>
+                            <ng-template #userType>
+                                <select
+                                    [ngModel]="user[field.field]"
+                                    #role="ngModel"
+                                    ngClass="w-100"
+                                    class="p-3"
+                                    (change)="confirm(user.id, role.value)"
+                                    *ngIf="isAdmin; else datoUser"
+                                >
+                                    <option class="p-3" value="professional">
+                                        Professional
+                                    </option>
+                                    <option class="p-3" value="partner">
+                                        Partner
+                                    </option>
+                                    <option class="p-3" value="manager">
+                                        Manager
+                                    </option>
+                                    <option class="p-3" value="admin">
+                                        Administrator
+                                    </option>
+                                </select>
+                                <ng-template #datoUser>
+                                    {{
+                                        user[field.field] | uppercase
+                                    }}</ng-template
+                                >
+                            </ng-template>
+                        </td>
+
+                        <td
+                            alignFrozen="right"
+                            pFrozenColumn
+                            [frozen]="true"
+                            *ngIf="isAdmin"
+                        >
+                            <p-tag
+                                icon="pi pi-trash"
+                                class="cursor-pointer"
+                                severity="danger"
+                                value="Delete"
+                                (click)="confirm(user.id)"
+                            ></p-tag>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

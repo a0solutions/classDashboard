@@ -93,3 +93,11 @@ input[type="file"] {
 .master-directory-create:hover {
     background: rgb(226, 226, 226);
 }
+.position-absolute {
+    position: absolute;
+    top: 30px;
+    right: 90px;
+}
+.position-relative {
+    position: relative;
+}

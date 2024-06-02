@@ -34,6 +34,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { ListboxModule } from 'primeng/listbox';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { CheckboxModule } from 'primeng/checkbox';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
     imports: [
@@ -77,6 +78,7 @@ import { CheckboxModule } from 'primeng/checkbox';
         SelectButtonModule,
         CheckboxModule,
         ButtonModule,
+        TagModule,
     ],
     declarations: [CrudComponent, CrudFormComponent],
 })

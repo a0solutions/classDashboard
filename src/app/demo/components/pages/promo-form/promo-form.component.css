@@ -21,3 +21,10 @@ hr {
 .close-button {
     cursor: pointer;
 }
+.trash {
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.trash:hover {
+    color: red;
+}

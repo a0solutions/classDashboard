@@ -60,7 +60,7 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 3rem">
+                        <th style="width: 2rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                         </th>
                         <th
@@ -120,27 +120,22 @@
                             [frozen]="true"
                             *ngIf="!activeCamp[activeCamp.length - 1]"
                         >
-                            <div class="flex">
-                                <button
-                                    pButton
-                                    pRipple
-                                    class="p-button-rounded p-button-primary mr-2 w-100"
-                                    (click)="answered(notification)"
-                                >
-                                    Mark Answered
-                                </button>
-                            </div>
+                            <p-tag
+                                icon="pi pi-eye"
+                                class="cursor-pointer w-100"
+                                severity="primary"
+                                value="Answered"
+                                (click)="answered(notification)"
+                            ></p-tag>
                         </td>
                         <td alignFrozen="right" pFrozenColumn [frozen]="true">
-                            <div class="flex">
-                                <button
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-eye"
-                                    class="p-button-rounded p-button-success mr-2"
-                                    (click)="openDetails(notification)"
-                                ></button>
-                            </div>
+                            <p-tag
+                                icon="pi pi-eye"
+                                class="cursor-pointer"
+                                severity="success"
+                                value="Read"
+                                (click)="openDetails(notification)"
+                            ></p-tag>
                         </td>
                     </tr>
                 </ng-template>
@@ -161,14 +156,10 @@
                     </p>
                     <h3>{{ fullname }}</h3>
                     <hr />
-                    <div class="flex">
-                        <p class="w-100">
-                            <strong>Email:</strong><br />{{ email }}
-                        </p>
-                        <p class="w-100">
-                            <strong>Date:</strong><br />{{ date }}
-                        </p>
-                    </div>
+                    <p><strong>Email:</strong><br />{{ email }}</p>
+                    <hr />
+                    <p><strong>Date:</strong><br />{{ date }}</p>
+
                     <hr />
                     <p><strong>Subject:</strong><br />{{ subject }}</p>
                     <hr />

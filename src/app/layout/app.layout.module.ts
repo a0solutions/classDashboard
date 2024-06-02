@@ -18,6 +18,8 @@ import { AppConfigModule } from './config/config.module';
 import { AppSidebarComponent } from './app.sidebar.component';
 import { AppLayoutComponent } from './app.layout.component';
 import { OrdersService } from '../demo/service/orders.service';
+import { ChipModule } from 'primeng/chip';
+import { TokenService } from '../demo/service/token.service';
 
 @NgModule({
     declarations: [
@@ -30,6 +32,7 @@ import { OrdersService } from '../demo/service/orders.service';
     ],
     imports: [
         BrowserModule,
+        ChipModule,
         FormsModule,
         HttpClientModule,
         BrowserAnimationsModule,
@@ -43,6 +46,6 @@ import { OrdersService } from '../demo/service/orders.service';
         AppConfigModule,
     ],
     exports: [AppLayoutComponent],
-    providers: [OrdersService],
+    providers: [OrdersService, TokenService],
 })
 export class AppLayoutModule {}

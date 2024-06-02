@@ -1,4 +1,4 @@
-import { NgModule, OnInit } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmptyDemoComponent } from './emptydemo.component';
 import { TableModule } from 'primeng/table';
@@ -16,12 +16,11 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { EmptyDemoRoutingModule } from './emptydemo-routing.module';
-import { PanelsDemoModule } from '../../uikit/panels/panelsdemo.module';
 import { DividerModule } from 'primeng/divider';
-import { TabMenuModule } from 'primeng/tabmenu';
 import { TabViewModule } from 'primeng/tabview';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
     imports: [
@@ -44,6 +43,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
         DividerModule,
         TabViewModule,
         ConfirmPopupModule,
+        TagModule,
     ],
     providers: [ConfirmationService, MessageService],
     declarations: [EmptyDemoComponent],

@@ -31,6 +31,11 @@ import { RouterModule } from '@angular/router';
                     ),
             },
             {
+                path: 'users',
+                loadChildren: () =>
+                    import('./users/users.module').then((m) => m.UsersModule),
+            },
+            {
                 path: 'timeline',
                 loadChildren: () =>
                     import('./timeline/timelinedemo.module').then(

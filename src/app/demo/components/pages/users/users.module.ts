@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NotificationComponent } from './notification.component';
+import { UsersComponent } from './users.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -31,16 +31,18 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { ListboxModule } from 'primeng/listbox';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { CheckboxModule } from 'primeng/checkbox';
-import { NotificationRoutingModule } from './notification-routing.module';
 import { NotificationsService } from 'src/app/demo/service/notifications.service';
 import { AccordionModule } from 'primeng/accordion';
 import { TabViewModule } from 'primeng/tabview';
 import { TagModule } from 'primeng/tag';
+import { UsersRoutingModule } from './users-routing.module';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
     imports: [
         CommonModule,
-        NotificationRoutingModule,
+        UsersRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,
@@ -79,8 +81,9 @@ import { TagModule } from 'primeng/tag';
         AccordionModule,
         TabViewModule,
         TagModule,
+        ConfirmPopupModule,
     ],
-    declarations: [NotificationComponent],
-    providers: [NotificationsService],
+    declarations: [UsersComponent],
+    providers: [ConfirmationService],
 })
-export class NotificationModule {}
+export class UsersModule {}

@@ -1,38 +1,6 @@
-<!-- <div class="grid">
-    <div class="col-12">
-        <div class="card">
-            <h5>Advanced</h5>
-            <p-fileUpload
-                name="demo[]"
-                url="./upload.php"
-                (onUpload)="onUpload($event)"
-                [multiple]="true"
-                accept="image/*"
-                [maxFileSize]="1000000"
-            >
-                <ng-template pTemplate="content">
-                    <ul *ngIf="uploadedFiles.length">
-                        <li *ngFor="let file of uploadedFiles">
-                            {{ file.name }} - {{ file.size }} bytes
-                        </li>
-                    </ul>
-                </ng-template>
-            </p-fileUpload>
-
-            <h5>Basic</h5>
-            <p-fileUpload
-                mode="basic"
-                name="demo[]"
-                url="./upload.php"
-                accept="image/*"
-                [maxFileSize]="1000000"
-                (onUpload)="onBasicUpload()"
-            ></p-fileUpload>
-        </div>
-    </div>
-</div> -->
 <div class="grid">
     <div class="col-12">
+        <p-confirmPopup key="confirm"></p-confirmPopup>
         <div class="card">
             <h5>Directories</h5>
             <p-accordion>
@@ -86,17 +54,14 @@
                                     *ngIf="isAdmin"
                                     class="pi pi-trash"
                                     (click)="
-                                        deleteDirectory(
-                                            category.category,
-                                            masterfolder
-                                        )
+                                        confirm(category.category, masterfolder)
                                     "
                                 ></i>
                             </p>
                         </div>
                         <div *ngIf="subfolderList[i].state">
                             <div
-                                class="subfolderList flex"
+                                class="subfolderList flex bg-gray-100"
                                 *ngFor="let folder of subfolderList[i].folders"
                             >
                                 <p
@@ -116,7 +81,7 @@
                                         *ngIf="isAdmin"
                                         class="pi pi-trash ms-5"
                                         (click)="
-                                            deleteDirectory(
+                                            confirm(
                                                 category.category,
                                                 masterfolder,
                                                 folder,
@@ -145,21 +110,17 @@
                 *ngFor="let image of allImages"
                 [header]="image.name"
                 [style]="{ width: '500px' }"
-                class="col-6"
+                class="col-6 position-relative"
             >
                 <ng-template pTemplate="header">
                     <img [alt]="image.name" [src]="image.url" />
                 </ng-template>
-                <ng-template pTemplate="footer">
-                    <div class="flex gap-3 mt-1">
-                        <p-button
-                            icon="pi pi-trash"
-                            severity="secondary"
-                            class="w-full"
-                            styleClass="w-full"
-                        />
-                    </div>
-                </ng-template>
+                <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    class="position-absolute"
+                    (click)="deleteImage(image)"
+                />
             </p-card>
         </div>
     </div>

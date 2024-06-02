@@ -22,7 +22,7 @@
 
                 <ng-template pTemplate="right">
                     <a
-                        [href]="url + 'classapi/files/BBDD.xlsx'"
+                        href="assets/files/BBDD.xlsx"
                         download="BBDD"
                         pButton
                         pRipple
@@ -46,7 +46,7 @@
                         pButton
                         pRipple
                         label="Export"
-                        icon="pi pi-upload"
+                        icon="pi pi-download"
                         class="p-button-help"
                         (click)="dt.exportCSV()"
                     ></button>
@@ -98,9 +98,6 @@
                         <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                         </th>
-                        <!-- <th alignFrozen="right" pFrozenColumn [frozen]="true">
-                            Images
-                        </th> -->
                         <th
                             *ngFor="let field of cols"
                             [pSortableColumn]="field.field"
@@ -127,28 +124,6 @@
                             ></p-tableCheckbox>
                         </td>
 
-                        <!-- <td>
-                            <img
-                                [src]="
-                                    url +
-                                    'classapi/images/' +
-                                    product.category +
-                                    '/products/' +
-                                    product.parentRef
-                                        .replaceAll(' ', '')
-                                        .substr(0, 8) +
-                                    '/' +
-                                    product.reference
-                                        .replaceAll(' ', '')
-                                        .substr(0, 8) +
-                                    '.jpg'
-                                "
-                                [alt]="product.name"
-                                width="100"
-                                class="shadow-4"
-                            />
-                        </td> -->
-
                         <td style="min-width: 15rem" *ngFor="let field of cols">
                             <span class="p-column-title">{{
                                 field.header
@@ -164,15 +139,13 @@
                         </td>
 
                         <td alignFrozen="right" pFrozenColumn [frozen]="true">
-                            <div class="flex">
-                                <button
-                                    pButton
-                                    pRipple
-                                    icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-success mr-2"
-                                    (click)="editProduct(product)"
-                                ></button>
-                            </div>
+                            <p-tag
+                                icon="pi pi-pencil"
+                                class="cursor-pointer"
+                                severity="success"
+                                value="Edit"
+                                (click)="editProduct(product)"
+                            ></p-tag>
                         </td>
                     </tr>
                 </ng-template>

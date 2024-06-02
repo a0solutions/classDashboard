@@ -39,7 +39,8 @@ export class NotificationComponent implements OnInit {
                     if (
                         !this.subjects.find(
                             (y) => y == this.notifications[i].subject
-                        )
+                        ) &&
+                        this.notifications[i].status == 0
                     ) {
                         this.subjects.push(this.notifications[i].subject);
                         this.activeCamp.push(false);
@@ -51,13 +52,13 @@ export class NotificationComponent implements OnInit {
             });
 
         this.cols = [
+            { field: 'id', header: 'ID' },
             { field: 'fullname', header: 'Full Name' },
             { field: 'subject', header: 'Subject' },
             { field: 'topic', header: 'Topic' },
             { field: 'email', header: 'Email' },
             { field: 'textmessage', header: 'Text Message' },
             { field: 'date', header: 'Date' },
-            { field: 'id', header: 'ID' },
         ];
     }
     onGlobalFilter(table: Table, event: Event): void {

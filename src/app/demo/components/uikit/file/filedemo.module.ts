@@ -19,6 +19,8 @@ import { SplitterModule } from 'primeng/splitter';
 import { PanelModule } from 'primeng/panel';
 import { DialogModule } from 'primeng/dialog';
 import { CardModule } from 'primeng/card';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
     imports: [
@@ -41,7 +43,9 @@ import { CardModule } from 'primeng/card';
         PanelModule,
         DialogModule,
         CardModule,
+        ConfirmPopupModule,
     ],
     declarations: [FileDemoComponent],
+    providers: [ConfirmationService],
 })
 export class FileDemoModule {}

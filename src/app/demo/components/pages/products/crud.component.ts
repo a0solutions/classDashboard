@@ -7,6 +7,7 @@ import { urls } from 'src/environments/environment';
 import { NgModel } from '@angular/forms';
 import { UploadEvent } from 'primeng/fileupload';
 import { TokenService } from 'src/app/demo/service/token.service';
+import { take } from 'rxjs';
 
 @Component({
     templateUrl: './crud.component.html',
@@ -49,8 +50,8 @@ export class CrudComponent implements OnInit {
         });
         this.productService
             .getProducts()
-            .toPromise()
-            .then((data) => {
+            .pipe(take(1))
+            .subscribe((data: Product[]) => {
                 this.products = data;
                 this.cd.markForCheck();
             });
@@ -146,14 +147,17 @@ export class CrudComponent implements OnInit {
                 // @ts-ignore
                 this.products[this.findIndexById(this.product.reference)] =
                     this.product;
-                this.productService.postProduct(this.product).subscribe((x) => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Successful',
-                        detail: 'Product Updated',
-                        life: 3000,
+                this.productService
+                    .postProduct(this.product)
+                    .pipe(take(1))
+                    .subscribe((x) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Successful',
+                            detail: 'Product Updated',
+                            life: 3000,
+                        });
                     });
-                });
             } else {
                 this.product.parentRef = 'product-placeholder.svg';
                 // @ts-ignore

@@ -57,8 +57,9 @@
                             ></p-sortIcon>
                         </th>
                         <th>Status</th>
-                        <th>Information</th>
                         <th>Notes</th>
+                        <th>Information</th>
+
                         <th>Hide</th>
                     </tr>
                 </ng-template>
@@ -165,9 +166,10 @@
                             <select
                                 [ngModel]="placeStatusClass(product)"
                                 #status
+                                ngClass="w-100"
                                 class="{{
                                     placeStatusClass(product)
-                                }} p-2 p-button-secondary"
+                                }} p-3 p-button-secondary"
                                 (change)="
                                     updateStatus(product.order, status, $event)
                                 "
@@ -212,20 +214,6 @@
                             >
                         </td>
                         <td>
-                            <button
-                                (click)="getInformation(product)"
-                                type="button"
-                                label="Danger"
-                                class="p-element p-ripple p-button-primary p-button-text p-button p-component"
-                                ng-reflect-label="Danger"
-                            >
-                                <span
-                                    class="p-button-label pi pi-info-circle"
-                                ></span
-                                ><span class="p-ink"></span>
-                            </button>
-                        </td>
-                        <td>
                             <p-button
                                 (click)="getNotes(product.order)"
                                 label="Notes"
@@ -236,18 +224,23 @@
                             ></p-button>
                         </td>
                         <td>
-                            <button
+                            <p-tag
+                                icon="pi pi-info-circle"
+                                class="cursor-pointer"
+                                severity="primary"
+                                value="Information"
+                                (click)="getInformation(product)"
+                            ></p-tag>
+                        </td>
+
+                        <td>
+                            <p-tag
+                                icon="pi pi-eye-slash"
+                                class="cursor-pointer"
+                                severity="danger"
+                                value="Hide"
                                 (click)="hideOrder(product.order)"
-                                type="button"
-                                label="Danger"
-                                class="p-element p-ripple p-button-danger p-button-text p-button p-component"
-                                ng-reflect-label="Danger"
-                            >
-                                <span
-                                    class="p-button-label pi pi-eye-slash"
-                                ></span
-                                ><span class="p-ink"></span>
-                            </button>
+                            ></p-tag>
                         </td>
                     </tr>
                 </ng-template>

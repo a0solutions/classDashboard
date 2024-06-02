@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Promotion } from 'src/app/demo/api/customer';
-import { NotificationsService } from 'src/app/demo/service/notifications.service';
+import { ProductService } from 'src/app/demo/service/product.service';
 import { TokenService } from 'src/app/demo/service/token.service';
 import { urls } from 'src/environments/environment';
+import { take } from 'rxjs/operators';
 
 @Component({
     templateUrl: './promotions.component.html',
@@ -14,12 +14,12 @@ import { urls } from 'src/environments/environment';
 })
 export class PromotionsComponent implements OnInit {
     url: string = urls.urlContact;
-    notifications: Notification[] = [];
+    promotions: Promotion[] = [];
     selectedColumns: any[] = [];
-    selectedNotifications: Notification[] = [];
+    selectedPromotions: Promotion[] = [];
     cols: any[] = [];
     notificationDialog: boolean = false;
-
+    promo: Promotion = <Promotion>{};
     //*********************** Notifications Properties */
     fullname: string = '';
     subject: string = '';
@@ -29,18 +29,39 @@ export class PromotionsComponent implements OnInit {
     date: string = '';
     promotionDialog: boolean = false;
     promotionSelected: Promotion = <Promotion>{};
-    constructor() {}
+    deleteHideDialog: boolean = false;
+    temp: any;
+    tempSelectedPromo: Promotion;
+    flag: string = '';
+    isAdmin: boolean = false;
+    constructor(
+        private messageService: MessageService,
+        private productService: ProductService,
+        private token: TokenService
+    ) {}
 
     ngOnInit() {
         this.cols = [
-            { field: 'fullname', header: 'Event' },
-            { field: 'subject', header: 'Status' },
-            { field: 'topic', header: 'Products' },
-            { field: 'textmessage', header: 'Event Lenght' },
-            { field: 'date', header: 'Event Category' },
-            { field: 'id', header: 'Submitted By' },
-            { field: 'id', header: 'Date' },
+            { field: 'event', header: 'Event' },
+            { field: 'status', header: 'Status' },
+            { field: 'products', header: 'Products' },
+            { field: 'eventLenght', header: 'Event Lenght' },
+            { field: 'eventCategory', header: 'Event Category' },
+            { field: 'submmitedBy', header: 'Submitted By' },
+            { field: 'date', header: 'Date' },
         ];
+        this.token.isAdmin.subscribe((x) => {
+            this.isAdmin = x;
+        });
+        this.getAllPromotions();
+    }
+    getAllPromotions() {
+        this.productService
+            .getPromo()
+            .pipe(take(1))
+            .subscribe((x: Promotion[]) => {
+                this.promotions = x;
+            });
     }
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(
@@ -48,17 +69,86 @@ export class PromotionsComponent implements OnInit {
             'contains'
         );
     }
-    openDetails(notification: any) {
-        this.fullname = notification.fullname;
-        this.email = notification.email;
-        this.subject = notification.subject;
-        this.topic = notification.topic;
-        this.textmessage = notification.textmessage;
-        this.date = notification.date;
-        this.notificationDialog = true;
+    savePromotion() {
+        this.tempSelectedPromo = this.promo;
+        if (this.promo.event?.trim()) {
+            if (this.promo.id == undefined) {
+                this.productService
+                    .postPromo(this.promo)
+                    .pipe(take(1))
+                    .subscribe((x) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Successful',
+                            detail: 'Product Updated',
+                            life: 3000,
+                        });
+                        this.getAllPromotions();
+                    });
+
+                this.promotionDialog = false;
+                this.promotions.push(this.promo);
+                this.tempSelectedPromo = <Promotion>{};
+            } else {
+                this.productService
+                    .putPromo(this.promo)
+                    .pipe(take(1))
+                    .subscribe((x) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Successful',
+                            detail: 'Product Updated',
+                            life: 3000,
+                        });
+                        this.getAllPromotions();
+                    });
+                this.promotionDialog = false;
+            }
+        }
     }
-    savePromotion() {}
     hideDialog() {
         this.promotionDialog = false;
+        this.deleteHideDialog = false;
+        this.getAllPromotions();
+    }
+    getProductsNumber(promo: Promotion): string {
+        return promo.products.length.toString();
+    }
+    openModal(promo?: Promotion) {
+        if (promo != undefined) {
+            this.promo = promo;
+        } else {
+            this.promo = <Promotion>{};
+            this.promo.products = [];
+        }
+        this.promotionDialog = true;
+    }
+    confirm() {
+        if (this.flag == 'deletePromotion') {
+            this.productService.deletePromotion(this.temp).subscribe((x) => {
+                this.promotions.splice(this.promotions.indexOf(this.temp), 1);
+                this.hideDialog();
+            });
+        } else if (this.flag == 'activePromotion') {
+            this.productService.activePromotion(this.temp).subscribe((x) => {
+                this.hideDialog();
+            });
+        }
+    }
+
+    deletePromotion(promotion: Promotion) {
+        this.flag = 'deletePromotion';
+        this.temp = promotion;
+        this.deleteHideDialog = true;
+    }
+    activePromotion(promotion: Promotion) {
+        this.flag = 'activePromotion';
+        this.temp = { newstatus: 1, id: promotion.id };
+        this.deleteHideDialog = true;
+    }
+    unsetPromotion(promotion: Promotion) {
+        this.flag = 'activePromotion';
+        this.temp = { newstatus: 0, id: promotion.id };
+        this.deleteHideDialog = true;
     }
 }

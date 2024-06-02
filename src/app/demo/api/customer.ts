@@ -39,11 +39,16 @@ export interface Notification {
     date: string;
     status: number;
 }
+export interface SmallProduct {
+    reference: string;
+    oldprice: number;
+}
 export interface Promotion {
+    id: string;
     event: string;
     status: number;
-    products: string[];
-    eventLength: number;
+    products: SmallProduct[];
+    eventLenght: number;
     eventCategory: string;
     submmitedBy: string;
     date: string;

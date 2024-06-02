@@ -34,6 +34,10 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { PromotionsRoutingModule } from './promotions-routing.module';
 import { ProductService } from 'src/app/demo/service/product.service';
 import { PromoFormComponent } from '../promo-form/promo-form.component';
+import { AvatarModule } from 'primeng/avatar';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
     imports: [
@@ -74,8 +78,11 @@ import { PromoFormComponent } from '../promo-form/promo-form.component';
         SelectButtonModule,
         CheckboxModule,
         ButtonModule,
+        AvatarModule,
+        ConfirmPopupModule,
+        TagModule,
     ],
     declarations: [PromotionsComponent, PromoFormComponent],
-    providers: [ProductService],
+    providers: [ProductService, ConfirmationService],
 })
 export class PromotionsModule {}

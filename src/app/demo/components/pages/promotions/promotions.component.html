@@ -5,25 +5,22 @@
 
             <p-table
                 #dt
-                [value]="notifications"
+                [value]="promotions"
                 [columns]="selectedColumns"
                 responsiveLayout="scroll"
                 [rows]="30"
                 [scrollable]="true"
                 scrollHeight="500px"
                 [globalFilterFields]="[
-                    'email',
-                    'fullname',
-                    'textmessage',
-                    'subject',
-                    'topic'
+                    'event',
+                    'submmitedBy',
+                    'date',
+                    'eventCategory'
                 ]"
                 [paginator]="true"
                 [rowsPerPageOptions]="[100, 200, 500]"
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedNotifications"
-                selectionMode="multiple"
                 [rowHover]="true"
                 dataKey="id"
             >
@@ -32,9 +29,7 @@
                         class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
                     >
                         <h5 class="m-0">Promotion Manage</h5>
-                        <p-button
-                            class="bg-primary"
-                            (click)="this.promotionDialog = true"
+                        <p-button class="bg-primary" (click)="openModal()"
                             >+ New Promotion</p-button
                         >
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
@@ -51,9 +46,6 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 3rem">
-                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
                         <th
                             *ngFor="let field of cols"
                             [pSortableColumn]="field.field"
@@ -70,42 +62,110 @@
                         <th alignFrozen="right" pFrozenColumn [frozen]="true">
                             Details
                         </th>
+                        <th
+                            alignFrozen="right"
+                            pFrozenColumn
+                            [frozen]="true"
+                            *ngIf="isAdmin"
+                        >
+                            Delete
+                        </th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-notification>
-                    <tr>
-                        <td>
-                            <p-tableCheckbox
-                                [value]="notification"
-                            ></p-tableCheckbox>
-                        </td>
-
+                <ng-template pTemplate="body" let-promotion>
+                    <tr [class]="promotion.status == 1 ? 'bg-green-50' : null">
                         <td style="min-width: 15rem" *ngFor="let field of cols">
                             <span class="p-column-title">{{
                                 field.header
                             }}</span>
                             <span
-                                *ngIf="field.field != 'price'; else pricesField"
+                                *ngIf="
+                                    field.field != 'products' &&
+                                    field.field != 'status'
+                                "
                             >
-                                {{ notification[field.field] }}
+                                {{ promotion[field.field] }}
                             </span>
-                            <ng-template #pricesField>
-                                {{
-                                    notification[field.field] | currency : "USD"
-                                }}
-                            </ng-template>
-                        </td>
 
-                        <td alignFrozen="right" pFrozenColumn [frozen]="true">
-                            <div class="flex">
+                            <span *ngIf="field.field === 'products'">
                                 <button
                                     pButton
                                     pRipple
-                                    icon="pi pi-eye"
-                                    class="p-button-rounded p-button-success mr-2"
-                                    (click)="openDetails(notification)"
+                                    type="button"
+                                    [label]="
+                                        getProductsNumber(promotion) +
+                                        ' Products'
+                                    "
+                                    class="p-button-text"
+                                    (click)="openModal(promotion)"
                                 ></button>
-                            </div>
+                            </span>
+                            <span *ngIf="field.field === 'status'">
+                                <button
+                                    *ngIf="
+                                        promotion[field.field] == 0 &&
+                                        this.isAdmin
+                                    "
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    label="Inactive"
+                                    class="p-button-danger p-button-text"
+                                    (click)="activePromotion(promotion)"
+                                ></button>
+                                <p
+                                    *ngIf="
+                                        promotion[field.field] == 0 &&
+                                        !this.isAdmin
+                                    "
+                                >
+                                    Inactive
+                                </p>
+                                <button
+                                    *ngIf="
+                                        promotion[field.field] == 1 &&
+                                        this.isAdmin
+                                    "
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    label="Active"
+                                    class="p-button-success p-button-text"
+                                    (click)="unsetPromotion(promotion)"
+                                ></button>
+                                <p
+                                    *ngIf="
+                                        promotion[field.field] == 1 &&
+                                        !this.isAdmin
+                                    "
+                                >
+                                    Active
+                                </p>
+                            </span>
+                        </td>
+
+                        <td alignFrozen="right" pFrozenColumn [frozen]="true">
+                            <p-tag
+                                icon="pi pi-pencil"
+                                class="cursor-pointer"
+                                severity="success"
+                                value="Edit"
+                                (click)="openModal(promotion)"
+                            ></p-tag>
+                        </td>
+                        <td
+                            alignFrozen="right"
+                            pFrozenColumn
+                            [frozen]="true"
+                            *ngIf="isAdmin"
+                        >
+                            <p-tag
+                                icon="pi pi-trash"
+                                class="cursor-pointer"
+                                severity="danger"
+                                value="Delete"
+                                (click)="deletePromotion(promotion)"
+                            ></p-tag>
                         </td>
                     </tr>
                 </ng-template>
@@ -121,7 +181,7 @@
     class="p-fluid"
 >
     <ng-template pTemplate="content">
-        <app-promo-form [promo]="promotionSelected"></app-promo-form>
+        <app-promo-form [promo]="promo"></app-promo-form>
     </ng-template>
 
     <ng-template pTemplate="footer">
@@ -140,6 +200,35 @@
             icon="pi pi-check"
             class="p-button-text"
             (click)="savePromotion()"
+        ></button>
+    </ng-template>
+</p-dialog>
+<p-dialog
+    [(visible)]="deleteHideDialog"
+    header="Confirm"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+>
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to proceed with this action?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            icon="pi pi-times"
+            class="p-button-text"
+            label="No"
+            (click)="deleteHideDialog = false"
+        ></button>
+        <button
+            pButton
+            pRipple
+            icon="pi pi-check"
+            class="p-button-text"
+            label="Yes"
+            (click)="confirm()"
         ></button>
     </ng-template>
 </p-dialog>

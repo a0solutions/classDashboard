@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm, NgModel } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
+import { take } from 'rxjs';
 import { LoginService } from 'src/app/demo/service/login.service';
 import {
     OrdersService,
@@ -48,27 +49,32 @@ export class EmptyDemoComponent implements OnInit {
         });
     }
     getAll(): void {
-        this.orders.getAllNotes().subscribe({
-            next: this.gettingAll.bind(this),
-            error: this.errorManage.bind(this),
-        });
+        this.orders
+            .getAllNotes()
+            .pipe(take(1))
+            .subscribe({
+                next: this.gettingAll.bind(this),
+                error: this.errorManage.bind(this),
+            });
     }
     errorManage(x: any) {
         this.user.signOut();
     }
     gettingAll(x: object): void {
         this.orders.allNotes = <note[]>x;
-        this.orders.getAllOrders().subscribe({
-            next: this.placeOrders.bind(this),
-            error: console.log.bind(this),
-        });
+        this.orders
+            .getAllOrders()
+            .pipe(take(1))
+            .subscribe({
+                next: this.placeOrders.bind(this),
+                error: console.log.bind(this),
+            });
     }
     placeOrders(data: order[]): void {
         this.ordersList = [];
         this.hideList = [];
         this.ordersList = <order[]>data.filter((x) => x.hide != 1);
         this.hideList = <order[]>data.filter((x) => x.hide == 1);
-        console.log(this.hideList);
     }
     placeStatusClass(order: order): string {
         if (order.canceled) return 'canceled';

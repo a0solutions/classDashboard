@@ -5,12 +5,7 @@
 export const environment = {
     production: false,
 };
-
-if (environment.production) {
-    var url = 'https://dashboard.classdesign.us/';
-} else {
-    var url = 'http://localhost/';
-}
+var url = 'http://localhost/';
 
 export const urls = {
     url: url,
