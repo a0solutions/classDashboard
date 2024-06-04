@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TokenService } from 'src/app/demo/service/token.service';
@@ -68,79 +68,72 @@ export class OrdersService {
     placedOrders: BehaviorSubject<number> = new BehaviorSubject(0);
     constructor(private http: HttpClient, private token: TokenService) {}
     getAllOrders(): Observable<object> {
-        let actualToken = this.token.getValidateToken();
-        return this.http.get(
-            this.url + '?validate=' + actualToken + '&context=admin'
-        );
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin');
+        return this.http.get(this.url, { params });
     }
     placeNotes(note: note): Observable<object> {
-        let actualToken = this.token.getValidateToken();
-        return this.http.post(
-            this.url + '?context=admin&validate=' + actualToken + '&rol=notes',
-            note
-        );
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin')
+            .set('rol', 'notes');
+        return this.http.post(this.url, note, { params });
     }
     getNotes(order: string): Observable<object> {
-        let actualToken = this.token.getValidateToken();
-        return this.http.get(
-            this.url +
-                '?validate=' +
-                actualToken +
-                '&context=admin&rol=notes&order=' +
-                order
-        );
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin')
+            .set('rol', 'notes')
+            .set('order', order);
+        return this.http.get(this.url, { params });
     }
     getAllNotes(): Observable<object> {
-        let actualToken = this.token.getValidateToken();
-        return this.http.get(
-            this.url +
-                '?validate=' +
-                actualToken +
-                '&context=admin&rol=notes&order=all'
-        );
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin')
+            .set('rol', 'notes')
+            .set('order', 'all');
+        return this.http.get(this.url, { params });
     }
     hideOrder(order: string): Observable<object> {
-        let actualToken = this.token.getValidateToken();
-        return this.http.put(
-            this.url +
-                '?validate=' +
-                actualToken +
-                '&context=admin&rol=hideOrder&order=' +
-                order,
-            order
-        );
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin')
+            .set('rol', 'hideOrder')
+            .set('order', order);
+        return this.http.put(this.url, order, { params });
     }
     updateTracking(order: string, tracking: NgModel): Observable<object> {
-        let actualToken = this.token.getValidateToken();
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin')
+            .set('rol', 'updateTracking')
+            .set('order', order);
         return this.http.put(
-            this.url +
-                '?validate=' +
-                actualToken +
-                '&context=admin&rol=updateTracking&order=' +
-                order,
-            { tracking: tracking.value }
+            this.url,
+            { tracking: tracking.value },
+            { params }
         );
     }
     updateCompany(order: string, company: NgModel): Observable<object> {
-        let actualToken = this.token.getValidateToken();
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin')
+            .set('rol', 'company')
+            .set('order', order);
         return this.http.put(
-            this.url +
-                '?validate=' +
-                actualToken +
-                '&context=admin&rol=company&order=' +
-                order,
-            { shippingCompany: company.value }
+            this.url,
+            { shippingCompany: company.value },
+            { params }
         );
     }
     updateStatus(order: string, company: NgModel): Observable<object> {
-        let actualToken = this.token.getValidateToken();
-        return this.http.put(
-            this.url +
-                '?validate=' +
-                actualToken +
-                '&context=admin&rol=status&order=' +
-                order,
-            { status: company.value }
-        );
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin')
+            .set('rol', 'status')
+            .set('order', order);
+        return this.http.put(this.url, { status: company.value }, { params });
     }
 }

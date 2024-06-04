@@ -54,7 +54,7 @@ export class AppMenuComponent implements OnInit {
                 ],
             },
             {
-                label: 'Notification',
+                label: 'Notifications',
                 items: [
                     {
                         label: 'Notifications',
@@ -64,7 +64,7 @@ export class AppMenuComponent implements OnInit {
                 ],
             },
             {
-                label: 'User',
+                label: 'Users',
                 items: [
                     {
                         label: 'Users',

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -16,9 +16,8 @@ export class LoginService {
         private router: Router
     ) {}
     postLogin(data: object): Observable<string> {
-        return this.http.post(this.url + '?context=admin', data, {
-            responseType: 'text',
-        });
+        const params = new HttpParams().set('context', 'admin');
+        return this.http.post(this.url, data, { responseType: 'text', params });
     }
 
     signOut(param?: string): void {
@@ -31,9 +30,10 @@ export class LoginService {
         return this.token.getUserName();
     }
     getAllUsers(): Observable<object> {
-        let token = this.token.getValidateToken();
-        return this.http.get(
-            this.url + '?context=admin&action=getAll&validate=' + token
-        );
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('context', 'admin')
+            .set('action', 'getAll');
+        return this.http.get(this.url, { params });
     }
 }

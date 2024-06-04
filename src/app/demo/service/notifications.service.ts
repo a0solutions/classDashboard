@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { urls } from 'src/environments/environment';
@@ -10,11 +10,17 @@ export class NotificationsService {
     url: string = urls.urlContact;
     constructor(private http: HttpClient, private tokenService: TokenService) {}
     getAllNotifications(): Observable<object> {
-        let token = this.tokenService.getValidateToken();
-        return this.http.get(this.url + '?validate=' + token);
+        const params = new HttpParams().set(
+            'validate',
+            this.tokenService.getValidateToken()
+        );
+        return this.http.get(this.url, { params });
     }
     answered(notification: Notification): Observable<object> {
-        let token = this.tokenService.getValidateToken();
-        return this.http.put(this.url + '?validate=' + token, notification);
+        const params = new HttpParams().set(
+            'validate',
+            this.tokenService.getValidateToken()
+        );
+        return this.http.put(this.url, notification, { params });
     }
 }
