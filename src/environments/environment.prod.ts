@@ -12,4 +12,5 @@ export const urls = {
     urlOrders: url + 'classapi/api/apiOrders.php',
     urlImages: url + 'classapi/api/apiImages.php',
     urlStripe: url + 'classapi/core/stripe.php',
+    urlCollections: url + 'classapi/api/apiCollections.php',
 };

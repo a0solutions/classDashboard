@@ -42,6 +42,20 @@ import { RouterModule } from '@angular/router';
                         (m) => m.TimelineDemoModule
                     ),
             },
+            {
+                path: 'categories',
+                loadChildren: () =>
+                    import('./categories/categories.module').then(
+                        (m) => m.CategoriesModule
+                    ),
+            },
+            {
+                path: 'collections',
+                loadChildren: () =>
+                    import('./collections/collections.module').then(
+                        (m) => m.CollectionsModule
+                    ),
+            },
             { path: '**', redirectTo: '/notfound' },
         ]),
     ],

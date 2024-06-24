@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -8,6 +8,11 @@ import { urls } from 'src/environments/environment';
 interface index {
     state: boolean;
     folders: string[];
+    masterIndex?: number;
+}
+interface subindex {
+    state: boolean;
+    subfolder: index[];
 }
 interface images {
     url: string;
@@ -23,12 +28,14 @@ export class FileDemoComponent {
     uploadedFiles: any[] = [];
     allFoldersSystem: any[] = [];
     subfolderList: index[] = [];
+    subfolderListColor: subindex[] = [];
     deleteProductsDialog = false;
     createdirectoryDialog = false;
     allImages: images[] = [];
     tempCategory: string;
     tempMaster: string;
     tempIndex: number;
+    tempsubfolder: string;
     targetDirectory: string;
     tempFolder: string;
     isAdmin: boolean = false;
@@ -52,6 +59,10 @@ export class FileDemoComponent {
                 this.allFoldersSystem.forEach((y) => {
                     y.folders.forEach((element) => {
                         this.subfolderList.push({ state: false, folders: [] });
+                        this.subfolderListColor.push({
+                            state: false,
+                            subfolder: [],
+                        });
                     });
                 });
             });
@@ -85,19 +96,57 @@ export class FileDemoComponent {
                 category
         ).subscribe((x: any) => {
             this.subfolderList[index].folders = x;
+            x.forEach((element) => {
+                this.subfolderList.push({ state: false, folders: [] });
+                this.subfolderListColor[index].subfolder.push({
+                    state: false,
+                    folders: [],
+                });
+            });
         });
         this.tempMaster = folder;
     }
-    getImages(category: string, masterfolder: string, folder: string) {
+    getFoldersColor(
+        parentFolder: string,
+        folder: string,
+        index: any,
+        category: string,
+        masterIndex: any
+    ) {
+        this.Imagenes.get(
+            this.url +
+                '?action=getfolderColor&folder=' +
+                folder.replaceAll('+', '%2B') +
+                '&parentFolder=' +
+                parentFolder +
+                '&category=' +
+                category
+        ).subscribe((x: any) => {
+            x.forEach((element) => {
+                this.subfolderListColor[masterIndex].subfolder[index].folders =
+                    x;
+            });
+        });
+        this.subfolderListColor[masterIndex].subfolder[index].state =
+            !this.subfolderListColor[masterIndex].subfolder[index].state;
+    }
+    getImages(
+        category: string,
+        masterfolder: string,
+        folder: string,
+        subfolder: string
+    ) {
         this.allImages = [];
         this.Imagenes.get(
             this.url +
                 '?category=' +
                 category +
                 '&folder=' +
-                folder +
+                folder.replaceAll('+', '%2B') +
                 '&parent=' +
-                masterfolder
+                masterfolder +
+                '&subfolder=' +
+                subfolder
         ).subscribe((x: any) => {
             x.forEach((y) => {
                 this.allImages.push({
@@ -110,6 +159,8 @@ export class FileDemoComponent {
                         '/' +
                         folder +
                         '/' +
+                        subfolder +
+                        '/' +
                         y,
                     name: y,
                 });
@@ -118,16 +169,19 @@ export class FileDemoComponent {
 
         this.deleteProductsDialog = true;
         this.tempFolder = folder;
+        this.tempsubfolder = subfolder;
     }
     deleteDirectory(
         category: string,
         masterfolder: string,
         folder?: string,
-        i?: number
+        i?: number,
+        subfolder?: string,
+        o?: number
     ) {
         let actualToken = this.token.getValidateToken();
         let sendUrl;
-        if (!folder) {
+        if (!folder && !subfolder) {
             sendUrl =
                 this.url +
                 '?validate=' +
@@ -136,7 +190,7 @@ export class FileDemoComponent {
                 masterfolder +
                 '&category=' +
                 category;
-        } else {
+        } else if (folder && !subfolder) {
             sendUrl =
                 this.url +
                 '?validate=' +
@@ -147,30 +201,57 @@ export class FileDemoComponent {
                 category +
                 '&folder=' +
                 folder;
+        } else {
+            sendUrl =
+                this.url +
+                '?validate=' +
+                actualToken +
+                '&parentFolder=' +
+                masterfolder +
+                '&category=' +
+                category +
+                '&folder=' +
+                folder +
+                '&subfolder=' +
+                subfolder;
         }
 
-        this.Imagenes.delete(sendUrl).subscribe((x) => {
+        this.Imagenes.delete(sendUrl.replaceAll('+', '%2B')).subscribe((x) => {
             let index = 0;
-            if (!folder) {
+            if (!folder && !subfolder) {
                 this.allFoldersSystem.find((x) => {
                     if (x.category == category) {
                         x.folders.forEach((y) => {
                             if (y == masterfolder) {
                                 x.folders.splice(index, 1);
-                                console.log(masterfolder);
                             }
                             index++;
                         });
                     }
                 });
-            } else {
+            } else if (folder && !subfolder) {
                 this.subfolderList[i].folders.forEach((x) => {
                     if (x == folder) {
                         this.subfolderList[i].folders.splice(index, 1);
                     }
                     index++;
                 });
+            } else {
+                this.subfolderListColor[i].subfolder[o].folders.forEach((x) => {
+                    if (x == subfolder) {
+                        this.subfolderListColor[i].subfolder[o].folders.splice(
+                            index,
+                            1
+                        );
+                    }
+                    index++;
+                });
             }
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Rejected',
+                detail: 'There was an error, check the format and name of the elements',
+            });
         });
     }
     createDirectory(category: string, masterfolder: string, i?: number) {
@@ -231,7 +312,9 @@ export class FileDemoComponent {
                     '&category=' +
                     this.tempCategory +
                     '&folder=' +
-                    this.tempFolder,
+                    this.tempFolder.replaceAll('+', '%2B') +
+                    '&subfolder=' +
+                    this.tempsubfolder,
                 formData
             ).subscribe({
                 next: this.okUpload.bind(this),
@@ -239,10 +322,15 @@ export class FileDemoComponent {
             });
         }
     }
-    okUpload() {
+    okUpload(response: any) {
         this.deleteProductsDialog = false;
     }
     consoleLog(x: any) {
+        this.messageService.add({
+            severity: 'error',
+            summary: 'Rejected',
+            detail: 'There was an error, check the format and name of the elements',
+        });
         console.log(x);
     }
     deleteImage(image: images) {
@@ -252,16 +340,23 @@ export class FileDemoComponent {
                 '?validate=' +
                 actualToken +
                 '&action=deleteImage&image=' +
-                image.url
+                image.url.replaceAll('+', '%2B')
         ).subscribe((x) => {
             x ? this.allImages.splice(this.allImages.indexOf(image), 1) : null;
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Rejected',
+                detail: 'Image deleted',
+            });
         });
     }
     confirm(
         category: string,
         masterfolder: string,
         folder?: string,
-        i?: number
+        i?: number,
+        subfolder?: string,
+        o?: number
     ) {
         this.confirmation.confirm({
             key: 'confirm',
@@ -269,7 +364,14 @@ export class FileDemoComponent {
             message: 'Are you sure that you want to proceed?',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.deleteDirectory(category, masterfolder, folder, i);
+                this.deleteDirectory(
+                    category,
+                    masterfolder,
+                    folder,
+                    i,
+                    subfolder,
+                    o
+                );
             },
             reject: () => {
                 this.messageService.add({
@@ -278,6 +380,20 @@ export class FileDemoComponent {
                     detail: 'You have rejected',
                 });
             },
+        });
+    }
+    generateDirectories() {
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('generate', true);
+        this.Imagenes.post(this.url, true, { params }).subscribe((x) => {
+            this.getAllFolders();
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'Directories generated',
+                life: 3000,
+            });
         });
     }
 }

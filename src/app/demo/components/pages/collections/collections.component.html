@@ -1,0 +1,140 @@
+<div class="grid w-100">
+    <p-toast></p-toast>
+    <div class="col-12 w-100 px-3">
+        <div class="card px-6 py-6 mb-4">
+            <form ngForm #collectionForm="ngForm">
+                <h5>Collections</h5>
+                <p>Files max size 2MB</p>
+                <hr />
+                <h5>Name</h5>
+                <span class="p-float-label">
+                    <input
+                        [(ngModel)]="name"
+                        name="name"
+                        id="float-input"
+                        type="text"
+                        pInputText
+                        class="w-100"
+                    />
+                    <label for="float-input">Name</label>
+                </span>
+
+                <h5>Description</h5>
+                <textarea
+                    [(ngModel)]="description"
+                    rows="5"
+                    cols="30"
+                    name="description"
+                    placeholder="Description"
+                    pInputTextarea
+                    class="w-100 mb-3"
+                ></textarea>
+                <label for="logo-upload" class="custom-file-upload p-button">
+                    <i class="pi pi-plus"></i> Import Logo 600px x 600px
+                </label>
+                <input
+                    ngModel
+                    name="logo"
+                    id="logo-upload"
+                    type="file"
+                    class="file-upload"
+                    multiple
+                    (change)="uploadLogo($event)"
+                />
+                <label for="banner-upload" class="custom-file-upload p-button">
+                    <i class="pi pi-plus"></i> Import Banner 1920px x 700px
+                </label>
+                <input
+                    ngModel
+                    name="banner"
+                    id="banner-upload"
+                    type="file"
+                    class="file-upload"
+                    multiple
+                    (change)="uploadBanner($event)"
+                />
+                <label
+                    for="document-upload"
+                    class="custom-file-upload p-button"
+                >
+                    <i class="pi pi-plus"></i> Import Document max 2MB
+                </label>
+                <input
+                    ngModel
+                    name="document"
+                    id="document-upload"
+                    type="file"
+                    class="file-upload"
+                    multiple
+                    (change)="uploadDocument($event)"
+                />
+
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Save"
+                    icon="pi pi-check"
+                    pTooltip="Click to proceed"
+                    (click)="sendCollection(collectionForm)"
+                ></button>
+            </form>
+        </div>
+        <div class="card px-6 py-6 mb-4">
+            <ng-container *ngFor="let collection of collections | async">
+                <div class="cardCollection flex mb-2">
+                    <h6 class="p-3 mb-0 collectionName">
+                        {{ collection.name }}
+                    </h6>
+                    <a
+                        [href]="
+                            url +
+                            'classapi/images/collections/logo/' +
+                            collection.urlLogo
+                        "
+                        target="_blank"
+                        pButton
+                        pRipple
+                        label="Logo"
+                        class="p-button-text mx-5"
+                    ></a>
+                    <a
+                        [href]="
+                            url +
+                            'classapi/images/collections/banner/' +
+                            collection.urlBanner
+                        "
+                        target="_blank"
+                        pButton
+                        pRipple
+                        label="Banner"
+                        class="p-button-text mx-5"
+                    ></a>
+                    <a
+                        [href]="
+                            url +
+                            'classapi/images/collections/file/' +
+                            collection.urlDocument
+                        "
+                        target="_blank"
+                        pButton
+                        pRipple
+                        label="Document"
+                        class="p-button-text mx-5"
+                    ></a>
+
+                    <div class="ml-auto">
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-times"
+                            class="p-button-rounded p-button-danger p-button-text"
+                            (click)="deleteCollection(collection.id)"
+                        ></button>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

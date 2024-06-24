@@ -49,6 +49,7 @@
                             Date <p-sortIcon field="date"></p-sortIcon>
                         </th>
                         <th>Amount</th>
+                        <th>Taxes</th>
                         <th>Items</th>
                         <th>Tracking Number</th>
                         <th pSortableColumn="shippingCompany">
@@ -94,7 +95,15 @@
                         </td>
                         <td>{{ product.order }}</td>
                         <td>{{ product.date }}</td>
-                        <td>{{ product.amount | currency : "USD" }}</td>
+                        <td>
+                            {{
+                                product.amount * 1 + product.taxes * 1
+                                    | currency : "USD"
+                            }}
+                        </td>
+                        <td>
+                            {{ product.taxes | currency : "USD" }}
+                        </td>
                         <td>{{ product.items }}</td>
                         <td>
                             <div class="col-12 mb-2 lg:col-4 lg:mb-0 d-flex">
@@ -379,7 +388,12 @@
                         </td>
                         <td>{{ product.order }}</td>
                         <td>{{ product.date }}</td>
-                        <td>{{ product.amount | currency : "USD" }}</td>
+                        <td>
+                            {{
+                                product.amount * 1 + product.taxes * 1
+                                    | currency : "USD"
+                            }}
+                        </td>
                         <td>{{ product.items }}</td>
                         <td>
                             <div class="col-12 mb-2 lg:col-4 lg:mb-0">

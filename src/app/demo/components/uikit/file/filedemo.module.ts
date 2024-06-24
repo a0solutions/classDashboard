@@ -21,6 +21,7 @@ import { DialogModule } from 'primeng/dialog';
 import { CardModule } from 'primeng/card';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
     imports: [
@@ -44,6 +45,7 @@ import { ConfirmationService } from 'primeng/api';
         DialogModule,
         CardModule,
         ConfirmPopupModule,
+        ToastModule,
     ],
     declarations: [FileDemoComponent],
     providers: [ConfirmationService],

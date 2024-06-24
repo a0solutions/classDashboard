@@ -73,6 +73,26 @@ export class AppMenuComponent implements OnInit {
                     },
                 ],
             },
+            {
+                label: 'Categories',
+                items: [
+                    {
+                        label: 'Categories',
+                        icon: 'pi pi-list',
+                        routerLink: ['/pages/categories'],
+                    },
+                ],
+            },
+            {
+                label: 'Collections',
+                items: [
+                    {
+                        label: 'Collections',
+                        icon: 'pi pi-tags',
+                        routerLink: ['/pages/collections'],
+                    },
+                ],
+            },
             // {
             //     label: 'UI Components',
             //     items: [

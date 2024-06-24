@@ -1,8 +1,17 @@
 <div class="grid">
     <div class="col-12">
+        <p-toast></p-toast>
         <p-confirmPopup key="confirm"></p-confirmPopup>
         <div class="card">
-            <h5>Directories</h5>
+            <div class="flex mb-3">
+                <h5>Directories</h5>
+                <p-button
+                    class="bg-primary ml-auto"
+                    (click)="generateDirectories()"
+                >
+                    Generate Directories
+                </p-button>
+            </div>
             <p-accordion>
                 <p-accordionTab
                     *ngFor="let category of allFoldersSystem"
@@ -11,7 +20,7 @@
                     class="line-height-3 m-0"
                     (click)="tempCategory = category.category"
                 >
-                    <div
+                    <!-- <div
                         class="master-directory-create"
                         (click)="createMasterDirectory(category.category)"
                     >
@@ -19,8 +28,8 @@
                             <i class="pi pi-plus"></i>
                             Create parent directory
                         </p>
-                    </div>
-                    <div
+                    </div> -->
+                    <ng-container
                         *ngFor="
                             let masterfolder of category.folders;
                             index as i
@@ -41,16 +50,6 @@
                             </p>
                             <p class="ms-auto mb-0 w-20">
                                 <i
-                                    class="pi pi-plus"
-                                    (click)="
-                                        createDirectory(
-                                            category.category,
-                                            masterfolder,
-                                            i
-                                        )
-                                    "
-                                ></i>
-                                <i
                                     *ngIf="isAdmin"
                                     class="pi pi-trash"
                                     (click)="
@@ -60,39 +59,94 @@
                             </p>
                         </div>
                         <div *ngIf="subfolderList[i].state">
-                            <div
-                                class="subfolderList flex bg-gray-100"
-                                *ngFor="let folder of subfolderList[i].folders"
+                            <ng-container
+                                *ngFor="
+                                    let folder of subfolderList[i].folders;
+                                    index as o
+                                "
                             >
-                                <p
-                                    class="mb-0 w-100"
-                                    (click)="
-                                        getImages(
-                                            category.category,
-                                            masterfolder,
-                                            folder
-                                        )
-                                    "
-                                >
-                                    <i class="pi pi-folder"></i> {{ folder }}
-                                </p>
-                                <p class="ms-auto mb-0">
-                                    <i
-                                        *ngIf="isAdmin"
-                                        class="pi pi-trash ms-5"
+                                <div class="subfolderList flex bg-gray-100">
+                                    <p
+                                        class="mb-0 w-100"
                                         (click)="
-                                            confirm(
-                                                category.category,
+                                            getFoldersColor(
                                                 masterfolder,
                                                 folder,
+                                                o,
+                                                category.category,
                                                 i
                                             )
                                         "
-                                    ></i>
-                                </p>
-                            </div>
+                                    >
+                                        <i class="pi pi-folder"></i>
+                                        {{ folder }}
+                                    </p>
+                                    <p class="ms-auto mb-0">
+                                        <i
+                                            *ngIf="isAdmin"
+                                            class="pi pi-trash ms-5"
+                                            (click)="
+                                                confirm(
+                                                    category.category,
+                                                    masterfolder,
+                                                    folder,
+                                                    i
+                                                )
+                                            "
+                                        ></i>
+                                    </p>
+                                </div>
+                                <div
+                                    *ngIf="
+                                        subfolderListColor[i].subfolder[o].state
+                                    "
+                                >
+                                    <ng-container
+                                        *ngFor="
+                                            let subfolder of subfolderListColor[
+                                                i
+                                            ].subfolder[o].folders
+                                        "
+                                    >
+                                        <div
+                                            class="subfolderList2 flex bg-gray-100"
+                                        >
+                                            <p
+                                                class="mb-0 w-100"
+                                                (click)="
+                                                    getImages(
+                                                        category.category,
+                                                        masterfolder,
+                                                        folder,
+                                                        subfolder
+                                                    )
+                                                "
+                                            >
+                                                <i class="pi pi-folder"></i>
+                                                {{ subfolder }}
+                                            </p>
+                                            <p class="ms-auto mb-0">
+                                                <i
+                                                    *ngIf="isAdmin"
+                                                    class="pi pi-trash ms-5"
+                                                    (click)="
+                                                        confirm(
+                                                            category.category,
+                                                            masterfolder,
+                                                            folder,
+                                                            i,
+                                                            subfolder,
+                                                            o
+                                                        )
+                                                    "
+                                                ></i>
+                                            </p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
                         </div>
-                    </div>
+                    </ng-container>
                 </p-accordionTab>
             </p-accordion>
         </div>

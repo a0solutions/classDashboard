@@ -1,0 +1,165 @@
+<div class="grid w-100">
+    <p-toast></p-toast>
+    <div class="col-6 w-100 px-3">
+        <div class="card px-6 py-6 mb-4">
+            <h5>Categories</h5>
+            <div class="flex align-items-center gap-3 mb-3">
+                <span>
+                    <input
+                        [ngModel]="tempCategory"
+                        #newCategoryInput="ngModel"
+                        type="text"
+                        pInputText
+                        placeholder="New Category"
+                        pTooltip="Enter the category name"
+                    />
+                </span>
+                <ng-container *ngIf="tempCategory == ''; else update">
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        label="Save"
+                        icon="pi pi-check"
+                        pTooltip="Click to proceed"
+                        (click)="postNewCategory(newCategoryInput)"
+                    ></button>
+                </ng-container>
+                <ng-template #update>
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        label="Update"
+                        icon="pi pi-check"
+                        pTooltip="Click to proceed"
+                        (click)="sendPutCategory(newCategoryInput)"
+                    ></button>
+                </ng-template>
+            </div>
+            <ng-container *ngFor="let category of categories | async">
+                <div class="cardCategory flex mb-2">
+                    <h6 class="p-3 mb-0">{{ category.category }}</h6>
+                    <div class="ml-auto">
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-pencil"
+                            class="p-button-rounded p-button-text"
+                            (click)="
+                                updateCategory(
+                                    category.category,
+                                    newCategoryInput
+                                )
+                            "
+                        ></button>
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-times"
+                            class="p-button-rounded p-button-danger p-button-text"
+                            (click)="deleteCategory(category.category)"
+                        ></button>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="col-6 w-100 px-3">
+        <div class="card px-6 py-6">
+            <h5>Product Type</h5>
+            <select
+                ngModel
+                #categorySelected="ngModel"
+                ngClass="w-100"
+                class="p-3 mb-3"
+                (change)="selectSubcategories(categorySelected)"
+            >
+                <option value="">Select Category</option>
+                <ng-container *ngFor="let category of categories | async">
+                    <option class="p-3" [value]="category.id">
+                        {{ category.category }}
+                    </option>
+                </ng-container>
+            </select>
+            <ng-container *ngIf="tempCategorySelected != ''">
+                <div class="flex align-items-center gap-3 mb-3">
+                    <span>
+                        <input
+                            [ngModel]="tempSubcategory"
+                            #newSubcategoryInput="ngModel"
+                            type="text"
+                            pInputText
+                            placeholder="New Product Type"
+                            pTooltip="Enter the category name"
+                        />
+                    </span>
+                    <ng-container
+                        *ngIf="tempSubcategory == ''; else updateSubcategory"
+                    >
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            label="Save"
+                            icon="pi pi-check"
+                            pTooltip="Click to proceed"
+                            (click)="
+                                postNewSucategory(
+                                    newSubcategoryInput,
+                                    categorySelected
+                                )
+                            "
+                        ></button>
+                    </ng-container>
+                    <ng-template #updateSubcategory>
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            label="Update"
+                            icon="pi pi-check"
+                            pTooltip="Click to proceed"
+                            (click)="
+                                sendPutSubcategory(
+                                    newSubcategoryInput,
+                                    categorySelected
+                                )
+                            "
+                        ></button>
+                    </ng-template>
+                </div>
+                <ng-container *ngFor="let subcategory of subcategories">
+                    <div class="cardCategory flex mb-2">
+                        <h6 class="p-3 mb-0">{{ subcategory }}</h6>
+                        <div class="ml-auto">
+                            <button
+                                pButton
+                                pRipple
+                                type="button"
+                                icon="pi pi-pencil"
+                                class="p-button-rounded p-button-text"
+                                (click)="updateSubcategoryElement(subcategory)"
+                            ></button>
+                            <button
+                                pButton
+                                pRipple
+                                type="button"
+                                icon="pi pi-times"
+                                class="p-button-rounded p-button-danger p-button-text"
+                                (click)="
+                                    deleteSubcategory(
+                                        subcategory,
+                                        categorySelected
+                                    )
+                                "
+                            ></button>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
