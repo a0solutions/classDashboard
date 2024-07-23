@@ -45,6 +45,7 @@
                     <tr>
                         <th style="width: 5rem"></th>
                         <th>Order ID</th>
+                        <th>Full Name</th>
                         <th pSortableColumn="date">
                             Date <p-sortIcon field="date"></p-sortIcon>
                         </th>
@@ -94,6 +95,13 @@
                             ></button>
                         </td>
                         <td>{{ product.order }}</td>
+                        <td>
+                            {{
+                                product.billing.billingName +
+                                    " " +
+                                    product.billing.billingSurname
+                            }}
+                        </td>
                         <td>{{ product.date }}</td>
                         <td>
                             {{
@@ -247,7 +255,7 @@
                                 icon="pi pi-eye-slash"
                                 class="cursor-pointer"
                                 severity="danger"
-                                value="Hide"
+                                value="Cancel"
                                 (click)="hideOrder(product.order)"
                             ></p-tag>
                         </td>
@@ -320,7 +328,7 @@
             </p-table>
         </p-tabPanel>
         <p-tabPanel
-            [header]="'Hidden Orders ' + hideList.length"
+            [header]="'Past Orders ' + hideList.length"
             class="line-height-3 m-0"
         >
             <p-table
@@ -419,7 +427,7 @@
                                 (change)="
                                     updateComany(product.order, company, $event)
                                 "
-                                [disabled]="!isAdmin"
+                                disabled
                             >
                                 <option value="">Shipping company</option>
                                 <option value="FedEx">FedEx</option>
@@ -451,7 +459,7 @@
                                 icon="pi pi-eye"
                                 class="cursor-pointer"
                                 severity="success"
-                                value="UnHide"
+                                value="Reactive"
                                 (click)="hideOrder(product.order)"
                             ></p-tag>
                         </td>

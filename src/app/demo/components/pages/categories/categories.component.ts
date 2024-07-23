@@ -36,6 +36,7 @@ export class CategoriesComponent implements OnInit {
             },
 
             (error) => {
+                console.log(error);
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Rejected',

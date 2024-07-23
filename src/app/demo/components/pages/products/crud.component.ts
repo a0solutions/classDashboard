@@ -8,6 +8,7 @@ import { NgModel } from '@angular/forms';
 import { UploadEvent } from 'primeng/fileupload';
 import { TokenService } from 'src/app/demo/service/token.service';
 import { take } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
     templateUrl: './crud.component.html',
@@ -41,7 +42,8 @@ export class CrudComponent implements OnInit {
         private productService: ProductService,
         private messageService: MessageService,
         private cd: ChangeDetectorRef,
-        private token: TokenService
+        private token: TokenService,
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -77,6 +79,20 @@ export class CrudComponent implements OnInit {
             { label: 'OUTOFSTOCK', value: 'outofstock' },
         ];
     }
+    imageUrl(product: Product) {
+        let tempurl =
+            this.url +
+            'classapi/images/' +
+            product.category +
+            '/products/' +
+            product.parentRef +
+            '/' +
+            product.sets +
+            '/' +
+            product.color +
+            '/1.webp';
+        return encodeURI(tempurl);
+    }
 
     openNew() {
         this.product = <Product>{};
@@ -98,21 +114,29 @@ export class CrudComponent implements OnInit {
         this.product = { ...product };
     }
 
-    confirmDeleteSelected() {
-        this.deleteProductsDialog = false;
-        this.products = this.products.filter(
-            (val) => !this.selectedProducts.includes(val)
-        );
-        let ids = this.gettingIds(this.selectedProducts);
-        this.productService.deleteProducts(ids).subscribe((x) => {
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Successful',
-                detail: 'Products Deleted',
-                life: 3000,
+    confirmDeleteSelected(key: NgModel) {
+        if (key.value == 'DELETE THESE PRODUCTS') {
+            this.deleteProductsDialog = false;
+            this.products = this.products.filter(
+                (val) => !this.selectedProducts.includes(val)
+            );
+            let ids = this.gettingIds(this.selectedProducts);
+            this.productService.deleteProducts(ids).subscribe((x) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Successful',
+                    detail: 'Products Deleted',
+                    life: 3000,
+                });
+                this.selectedProducts = [];
             });
-            this.selectedProducts = [];
-        });
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Rejected',
+                detail: 'Wrong key',
+            });
+        }
     }
     gettingIds(products: Product[]): string[] {
         let ids: string[] = [];
@@ -219,5 +243,13 @@ export class CrudComponent implements OnInit {
                 });
             });
         }
+    }
+    NavigateProduct(product: Product) {
+        window.open(
+            this.url + 'product/' + product.reference + '/' + product.name,
+            '_blank'
+        );
+
+        //this.router.navigate([this.url + 'product/' + product.reference]);
     }
 }

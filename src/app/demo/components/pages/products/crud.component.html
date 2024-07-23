@@ -98,6 +98,7 @@
                         <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                         </th>
+                        <th>Image</th>
                         <th
                             *ngFor="let field of cols"
                             [pSortableColumn]="field.field"
@@ -123,7 +124,14 @@
                                 [value]="product"
                             ></p-tableCheckbox>
                         </td>
-
+                        <td>
+                            <img
+                                [src]="imageUrl(product)"
+                                [alt]="product.name"
+                                width="100"
+                                class="shadow-4"
+                            />
+                        </td>
                         <td style="min-width: 15rem" *ngFor="let field of cols">
                             <span class="p-column-title">{{
                                 field.header
@@ -137,7 +145,7 @@
                                 {{ product[field.field] | currency : "USD" }}
                             </ng-template>
                         </td>
-
+                        <!-- 
                         <td alignFrozen="right" pFrozenColumn [frozen]="true">
                             <p-tag
                                 icon="pi pi-pencil"
@@ -145,6 +153,20 @@
                                 severity="success"
                                 value="Edit"
                                 (click)="editProduct(product)"
+                            ></p-tag>
+                        </td> -->
+                        <td
+                            alignFrozen="right"
+                            style="min-width: 10rem"
+                            pFrozenColumn
+                            [frozen]="true"
+                        >
+                            <p-tag
+                                icon="pi pi-eye"
+                                class="cursor-pointer"
+                                severity="success"
+                                value="View Product"
+                                (click)="NavigateProduct(product)"
                             ></p-tag>
                         </td>
                     </tr>
@@ -225,12 +247,19 @@
             [modal]="true"
             [style]="{ width: '450px' }"
         >
-            <div class="flex align-items-center justify-content-center">
+            <div class="align-items-center justify-content-center">
                 <i
                     class="pi pi-exclamation-triangle mr-3"
                     style="font-size: 2rem"
                 ></i>
-                <span>Are you sure you want to delete selected products?</span>
+                <span
+                    >To delete the selcted products you must write the following
+                    sentence in the input field below."DELETE THESE
+                    PRODUCTS"</span
+                ><br /><br />
+
+                <label>Write the key</label>
+                <input ngModel #key="ngModel" type="text" pInputText required />
             </div>
             <ng-template pTemplate="footer">
                 <button
@@ -247,7 +276,7 @@
                     icon="pi pi-check"
                     class="p-button-text"
                     label="Yes"
-                    (click)="confirmDeleteSelected()"
+                    (click)="confirmDeleteSelected(key)"
                 ></button>
             </ng-template>
         </p-dialog>

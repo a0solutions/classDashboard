@@ -154,20 +154,52 @@
 </div>
 <p-dialog
     [(visible)]="deleteProductsDialog"
-    header="Product Image"
+    [header]="
+        'Product Image / ' +
+        tempMaster +
+        ' / ' +
+        tempFolder +
+        ' / ' +
+        tempsubfolder
+    "
     [modal]="true"
     [style]="{ width: '1200px' }"
 >
     <div class="align-items-center justify-content-center">
         <div class="grid mt-5 mx-auto">
             <p-card
-                *ngFor="let image of allImages"
-                [header]="image.name"
+                *ngFor="let image of allImages; index as i"
                 [style]="{ width: '500px' }"
                 class="col-6 position-relative"
             >
                 <ng-template pTemplate="header">
                     <img [alt]="image.name" [src]="image.url" />
+                </ng-template>
+                <ng-template pTemplate="body">
+                    <div class="flex align-items-center gap-2">
+                        <span>
+                            <input
+                                (focus)="focus[i] = true"
+                                [ngModel]="image.name"
+                                #imageName="ngModel"
+                                class="change-image-name"
+                                type="text"
+                                pInputText
+                            />
+                        </span>
+                        <button
+                            *ngIf="focus[i]"
+                            pButton
+                            pRipple
+                            type="button"
+                            label="Save"
+                            icon="pi pi-check"
+                            (click)="
+                                changeImageName(image.name, imageName.value)
+                            "
+                            pTooltip="Click to proceed"
+                        ></button>
+                    </div>
                 </ng-template>
                 <p-button
                     icon="pi pi-trash"

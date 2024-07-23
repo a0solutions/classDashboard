@@ -87,6 +87,7 @@ export class UsersComponent implements OnInit {
             });
     }
     confirmed(): void {
+        this.getUsers();
         this.messageService.add({
             severity: 'info',
             summary: 'Confirmed',

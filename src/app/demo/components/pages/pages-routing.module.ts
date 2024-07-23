@@ -56,6 +56,11 @@ import { RouterModule } from '@angular/router';
                         (m) => m.CollectionsModule
                     ),
             },
+            {
+                path: 'blog',
+                loadChildren: () =>
+                    import('./blog/blog.module').then((m) => m.BlogModule),
+            },
             { path: '**', redirectTo: '/notfound' },
         ]),
     ],

@@ -120,11 +120,11 @@
                                     (change)="confirm(user.id, role.value)"
                                     *ngIf="isAdmin; else datoUser"
                                 >
+                                    <option class="p-3" value="member">
+                                        Member
+                                    </option>
                                     <option class="p-3" value="professional">
                                         Professional
-                                    </option>
-                                    <option class="p-3" value="partner">
-                                        Partner
                                     </option>
                                     <option class="p-3" value="manager">
                                         Manager

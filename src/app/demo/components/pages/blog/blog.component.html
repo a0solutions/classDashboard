@@ -1,0 +1,110 @@
+<div class="grid w-100">
+    <p-toast></p-toast>
+    <div class="col-12 w-100 px-3">
+        <div class="card px-6 py-6 mb-4">
+            <form ngForm #BlogForm="ngForm">
+                <h5>Blogs</h5>
+                <p>Files max size 2MB</p>
+                <hr />
+                <!-- <label for="banner-upload" class="custom-file-upload p-button">
+                    <i class="pi pi-plus"></i> Import Banner 1920px x 700px
+                </label>
+                <input
+                    ngModel
+                    name="banner"
+                    id="banner-upload"
+                    type="file"
+                    class="file-upload"
+                    multiple
+                    (change)="uploadBanner($event)"
+                /> -->
+                <h5>Title</h5>
+                <span class="p-float-label">
+                    <input
+                        [(ngModel)]="name"
+                        name="name"
+                        id="float-input"
+                        type="text"
+                        pInputText
+                        class="w-100"
+                    />
+                    <label for="float-input">Title</label>
+                </span>
+                <h5>Author</h5>
+                <span class="p-float-label mb-4">
+                    <input
+                        [(ngModel)]="author"
+                        name="author"
+                        id="float-input"
+                        type="text"
+                        pInputText
+                        class="w-100"
+                    />
+                    <label for="float-input">Title</label>
+                </span>
+
+                <h5>Blog Content</h5>
+                <!-- 
+                <quill-editor
+                    #editor
+                    class="w-100 mb-4"
+                    [modules]="modules"
+                    (onEditorCreated)="onEditorCreated($event)"
+                ></quill-editor> -->
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Save"
+                    icon="pi pi-check"
+                    pTooltip="Click to proceed"
+                    (click)="sendBlog(BlogForm)"
+                ></button>
+            </form>
+        </div>
+        <div class="card px-6 py-6 mb-4">
+            <ng-container *ngFor="let blog of blogs">
+                <div class="cardCollection flex mb-2">
+                    <h6 class="p-3 mb-0 collectionName">
+                        {{ blog.title }}
+                    </h6>
+                    <a
+                        [href]="
+                            url +
+                            'classapi/images/collections/logo/' +
+                            blog.author
+                        "
+                        target="_blank"
+                        pButton
+                        pRipple
+                        label="Logo"
+                        class="p-button-text mx-5"
+                    ></a>
+                    <a
+                        [href]="
+                            url +
+                            'classapi/images/collections/banner/' +
+                            blog.date
+                        "
+                        target="_blank"
+                        pButton
+                        pRipple
+                        label="Banner"
+                        class="p-button-text mx-5"
+                    ></a>
+
+                    <div class="ml-auto">
+                        <button
+                            pButton
+                            pRipple
+                            type="button"
+                            icon="pi pi-times"
+                            class="p-button-rounded p-button-danger p-button-text"
+                            (click)="deleteBlog(blog.id)"
+                        ></button>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

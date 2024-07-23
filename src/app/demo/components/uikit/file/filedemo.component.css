@@ -112,3 +112,15 @@ input[type="file"] {
 .position-relative {
     position: relative;
 }
+.change-image-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 15px;
+    width: 90%;
+    margin: 10px;
+    border: none;
+}
+.button-change-image {
+    width: 10%;
+    margin: 20px;
+}

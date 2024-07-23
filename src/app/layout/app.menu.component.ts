@@ -24,6 +24,16 @@ export class AppMenuComponent implements OnInit {
                 ],
             },
             {
+                label: 'Categories',
+                items: [
+                    {
+                        label: 'Categories',
+                        icon: 'pi pi-list',
+                        routerLink: ['/pages/categories'],
+                    },
+                ],
+            },
+            {
                 label: 'Products',
                 items: [
                     {
@@ -37,8 +47,8 @@ export class AppMenuComponent implements OnInit {
                         routerLink: ['/pages/promotions'],
                     },
                     {
-                        label: 'Storage',
-                        icon: 'pi pi-fw pi-bookmark',
+                        label: 'Viasual Storage',
+                        icon: 'pi pi-fw pi-camera',
                         routerLink: ['/uikit/file'],
                     },
                 ],
@@ -57,7 +67,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Notifications',
                 items: [
                     {
-                        label: 'Notifications',
+                        label: 'Customer Management',
                         icon: 'pi pi-fw pi-bell',
                         routerLink: ['/pages/notification'],
                     },
@@ -73,16 +83,7 @@ export class AppMenuComponent implements OnInit {
                     },
                 ],
             },
-            {
-                label: 'Categories',
-                items: [
-                    {
-                        label: 'Categories',
-                        icon: 'pi pi-list',
-                        routerLink: ['/pages/categories'],
-                    },
-                ],
-            },
+
             {
                 label: 'Collections',
                 items: [
@@ -93,6 +94,16 @@ export class AppMenuComponent implements OnInit {
                     },
                 ],
             },
+            // {
+            //     label: 'Blog',
+            //     items: [
+            //         {
+            //             label: 'Blog Management',
+            //             icon: 'pi pi-pencil',
+            //             routerLink: ['/pages/blog'],
+            //         },
+            //     ],
+            // },
             // {
             //     label: 'UI Components',
             //     items: [

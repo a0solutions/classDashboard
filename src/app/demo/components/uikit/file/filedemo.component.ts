@@ -39,6 +39,7 @@ export class FileDemoComponent {
     targetDirectory: string;
     tempFolder: string;
     isAdmin: boolean = false;
+    focus: boolean[];
     constructor(
         private messageService: MessageService,
         private Imagenes: HttpClient,
@@ -136,6 +137,7 @@ export class FileDemoComponent {
         folder: string,
         subfolder: string
     ) {
+        this.focus = [];
         this.allImages = [];
         this.Imagenes.get(
             this.url +
@@ -150,7 +152,7 @@ export class FileDemoComponent {
         ).subscribe((x: any) => {
             x.forEach((y) => {
                 this.allImages.push({
-                    url:
+                    url: (
                         urls.url +
                         'classapi/images/' +
                         category +
@@ -161,9 +163,13 @@ export class FileDemoComponent {
                         '/' +
                         subfolder +
                         '/' +
-                        y,
+                        y
+                    )
+                        .replaceAll('+', '%2B')
+                        .replaceAll(' ', '%20'),
                     name: y,
                 });
+                this.focus.push(false);
             });
         });
 
@@ -248,9 +254,10 @@ export class FileDemoComponent {
                 });
             }
             this.messageService.add({
-                severity: 'error',
-                summary: 'Rejected',
-                detail: 'There was an error, check the format and name of the elements',
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'Directories was deleted',
+                life: 3000,
             });
         });
     }
@@ -340,12 +347,12 @@ export class FileDemoComponent {
                 '?validate=' +
                 actualToken +
                 '&action=deleteImage&image=' +
-                image.url.replaceAll('+', '%2B')
+                image.url.replaceAll('+', '%2B').replaceAll(' ', '%20')
         ).subscribe((x) => {
             x ? this.allImages.splice(this.allImages.indexOf(image), 1) : null;
             this.messageService.add({
                 severity: 'error',
-                summary: 'Rejected',
+                summary: 'Done',
                 detail: 'Image deleted',
             });
         });
@@ -392,6 +399,36 @@ export class FileDemoComponent {
                 severity: 'success',
                 summary: 'Successful',
                 detail: 'Directories generated',
+                life: 3000,
+            });
+        });
+    }
+    changeImageName(oldName: string, name: string) {
+        const params = new HttpParams()
+            .set('validate', this.token.getValidateToken())
+            .set('changeImageName', true);
+        this.Imagenes.post(
+            this.url,
+            {
+                oldName: oldName,
+                name: name,
+                category: this.tempCategory,
+                parentRef: this.tempMaster,
+                color: this.tempsubfolder,
+                sets: this.tempFolder,
+            },
+            { params }
+        ).subscribe((x) => {
+            this.getImages(
+                this.tempCategory,
+                this.tempMaster,
+                this.tempFolder,
+                this.tempsubfolder
+            );
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'The name of the image was changed.',
                 life: 3000,
             });
         });
