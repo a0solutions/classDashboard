@@ -50,6 +50,7 @@
                             Date <p-sortIcon field="date"></p-sortIcon>
                         </th>
                         <th>Amount</th>
+                        <th>Method</th>
                         <th>Taxes</th>
                         <th>Items</th>
                         <th>Tracking Number</th>
@@ -108,6 +109,27 @@
                                 product.amount * 1 + product.taxes * 1
                                     | currency : "USD"
                             }}
+                        </td>
+                        <td>
+                            <ng-container
+                                *ngIf="
+                                    product.paymentMethod == 'stripe';
+                                    else affirm
+                                "
+                            >
+                                <img
+                                    src="assets/images/stripe.png"
+                                    alt="stripe logo"
+                                    width="100%"
+                                />
+                            </ng-container>
+                            <ng-template #affirm>
+                                <img
+                                    src="assets/images/affirm.png"
+                                    alt="stripe logo"
+                                    width="100%"
+                                />
+                            </ng-template>
                         </td>
                         <td>
                             {{ product.taxes | currency : "USD" }}
@@ -211,12 +233,12 @@
                                         Roadshow
                                     </option>
                                 </optgroup>
-                                <optgroup label="Clousing" class="optionGroup">
+                                <optgroup label="Closing" class="optionGroup">
                                     <option class="p-3" value="delivered">
                                         Delivered
                                     </option>
                                     <option class="p-3" value="canceled">
-                                        Canceled
+                                        Cancelled
                                     </option>
                                 </optgroup>
                             </select>
@@ -347,6 +369,7 @@
                             Date <p-sortIcon field="date"></p-sortIcon>
                         </th>
                         <th>Amount</th>
+                        <th>Method</th>
                         <th>Items</th>
                         <th pSortableColumn="trskingNumber">
                             Tracking Number
@@ -401,6 +424,27 @@
                                 product.amount * 1 + product.taxes * 1
                                     | currency : "USD"
                             }}
+                        </td>
+                        <td>
+                            <ng-container
+                                *ngIf="
+                                    product.paymentMethod == 'stripe';
+                                    else affirm
+                                "
+                            >
+                                <img
+                                    src="assets/images/stripe.png"
+                                    alt="stripe logo"
+                                    width="100%"
+                                />
+                            </ng-container>
+                            <ng-template #affirm>
+                                <img
+                                    src="assets/images/affirm.png"
+                                    alt="stripe logo"
+                                    width="100%"
+                                />
+                            </ng-template>
                         </td>
                         <td>{{ product.items }}</td>
                         <td>

@@ -61,6 +61,13 @@ import { RouterModule } from '@angular/router';
                 loadChildren: () =>
                     import('./blog/blog.module').then((m) => m.BlogModule),
             },
+            {
+                path: 'showrooms',
+                loadChildren: () =>
+                    import('./showrooms/showrooms.module').then(
+                        (m) => m.ShowroomsModule
+                    ),
+            },
             { path: '**', redirectTo: '/notfound' },
         ]),
     ],

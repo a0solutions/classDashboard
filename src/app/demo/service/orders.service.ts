@@ -30,6 +30,7 @@ export interface order {
     hide?: number;
     shippingCompany?: string;
     taxes: number;
+    paymentMethod: string;
 }
 export interface billing {
     billingName: string;

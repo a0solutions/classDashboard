@@ -14,4 +14,5 @@ export const urls = {
     urlStripe: url + 'classapi/core/stripe.php',
     urlCollections: url + 'classapi/api/apiCollections.php',
     urlBlog: url + 'classapi/api/apiBlog.php',
+    urlShowrooms: url + 'classapi/api/apiShowrooms.php',
 };

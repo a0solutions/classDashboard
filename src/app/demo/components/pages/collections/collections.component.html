@@ -4,7 +4,7 @@
         <div class="card px-6 py-6 mb-4">
             <form ngForm #collectionForm="ngForm">
                 <h5>Collections</h5>
-                <p>Files max size 2MB</p>
+                <p>Files max size 20MB</p>
                 <hr />
                 <h5>Name</h5>
                 <span class="p-float-label">
@@ -42,7 +42,7 @@
                     (change)="uploadLogo($event)"
                 />
                 <label for="banner-upload" class="custom-file-upload p-button">
-                    <i class="pi pi-plus"></i> Import Banner 1920px x 700px
+                    <i class="pi pi-plus"></i> Import Banner 1500px x 700px
                 </label>
                 <input
                     ngModel
@@ -57,7 +57,7 @@
                     for="document-upload"
                     class="custom-file-upload p-button"
                 >
-                    <i class="pi pi-plus"></i> Import Document max 2MB
+                    <i class="pi pi-plus"></i> Import Document max 20MB
                 </label>
                 <input
                     ngModel
@@ -73,7 +73,7 @@
                     pButton
                     pRipple
                     type="button"
-                    label="Save"
+                    [label]="saveButton"
                     icon="pi pi-check"
                     pTooltip="Click to proceed"
                     (click)="sendCollection(collectionForm)"

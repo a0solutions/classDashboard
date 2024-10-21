@@ -5,6 +5,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { take } from 'rxjs';
 import { TokenService } from 'src/app/demo/service/token.service';
 import { urls } from 'src/environments/environment';
+import { CategoriesComponent } from '../../pages/categories/categories.component';
 interface index {
     state: boolean;
     folders: string[];
@@ -89,13 +90,11 @@ export class FileDemoComponent {
     }
     getFolders(folder: string, index: any, category: string) {
         this.subfolderList[index].state = !this.subfolderList[index].state;
-        this.Imagenes.get(
-            this.url +
-                '?action=getfolder&folder=' +
-                folder +
-                '&category=' +
-                category
-        ).subscribe((x: any) => {
+        const params = new HttpParams()
+            .set('action', 'getfolder')
+            .set('folder', folder)
+            .set('category', category);
+        this.Imagenes.get(this.url, { params }).subscribe((x: any) => {
             this.subfolderList[index].folders = x;
             x.forEach((element) => {
                 this.subfolderList.push({ state: false, folders: [] });
@@ -114,15 +113,12 @@ export class FileDemoComponent {
         category: string,
         masterIndex: any
     ) {
-        this.Imagenes.get(
-            this.url +
-                '?action=getfolderColor&folder=' +
-                folder.replaceAll('+', '%2B') +
-                '&parentFolder=' +
-                parentFolder +
-                '&category=' +
-                category
-        ).subscribe((x: any) => {
+        const params = new HttpParams()
+            .set('action', 'getfolderColor')
+            .set('folder', folder)
+            .set('parentFolder', parentFolder)
+            .set('category', category);
+        this.Imagenes.get(this.url, { params }).subscribe((x: any) => {
             x.forEach((element) => {
                 this.subfolderListColor[masterIndex].subfolder[index].folders =
                     x;
@@ -139,20 +135,15 @@ export class FileDemoComponent {
     ) {
         this.focus = [];
         this.allImages = [];
-        this.Imagenes.get(
-            this.url +
-                '?category=' +
-                category +
-                '&folder=' +
-                folder.replaceAll('+', '%2B') +
-                '&parent=' +
-                masterfolder +
-                '&subfolder=' +
-                subfolder
-        ).subscribe((x: any) => {
+        const params = new HttpParams()
+            .set('category', category)
+            .set('folder', folder)
+            .set('parent', masterfolder)
+            .set('subfolder', subfolder);
+        this.Imagenes.get(this.url, { params }).subscribe((x: any) => {
             x.forEach((y) => {
                 this.allImages.push({
-                    url: (
+                    url:
                         urls.url +
                         'classapi/images/' +
                         category +
@@ -163,10 +154,7 @@ export class FileDemoComponent {
                         '/' +
                         subfolder +
                         '/' +
-                        y
-                    )
-                        .replaceAll('+', '%2B')
-                        .replaceAll(' ', '%20'),
+                        y,
                     name: y,
                 });
                 this.focus.push(false);
@@ -174,6 +162,7 @@ export class FileDemoComponent {
         });
 
         this.deleteProductsDialog = true;
+        this.tempMaster = masterfolder;
         this.tempFolder = folder;
         this.tempsubfolder = subfolder;
     }
@@ -187,42 +176,17 @@ export class FileDemoComponent {
     ) {
         let actualToken = this.token.getValidateToken();
         let sendUrl;
-        if (!folder && !subfolder) {
-            sendUrl =
-                this.url +
-                '?validate=' +
-                actualToken +
-                '&parentFolder=' +
-                masterfolder +
-                '&category=' +
-                category;
-        } else if (folder && !subfolder) {
-            sendUrl =
-                this.url +
-                '?validate=' +
-                actualToken +
-                '&parentFolder=' +
-                masterfolder +
-                '&category=' +
-                category +
-                '&folder=' +
-                folder;
+        const params = new HttpParams()
+            .set('validate', actualToken)
+            .set('parentFolder', masterfolder)
+            .set('category', category);
+        if (folder && !subfolder) {
+            params.set('folder', folder);
         } else {
-            sendUrl =
-                this.url +
-                '?validate=' +
-                actualToken +
-                '&parentFolder=' +
-                masterfolder +
-                '&category=' +
-                category +
-                '&folder=' +
-                folder +
-                '&subfolder=' +
-                subfolder;
+            params.set('folder', folder).set('subfolder', subfolder);
         }
 
-        this.Imagenes.delete(sendUrl.replaceAll('+', '%2B')).subscribe((x) => {
+        this.Imagenes.delete(this.url, { params }).subscribe((x) => {
             let index = 0;
             if (!folder && !subfolder) {
                 this.allFoldersSystem.find((x) => {
@@ -270,73 +234,84 @@ export class FileDemoComponent {
     }
     confirmCreateDirectory(folder: NgModel) {
         let actualToken = this.token.getValidateToken();
-        let sendUrl =
-            this.url +
-            '?validate=' +
-            actualToken +
-            '&parentFolder=' +
-            this.tempMaster +
-            '&category=' +
-            this.tempCategory +
-            '&folder=' +
-            folder.value +
-            '&target=' +
-            this.targetDirectory;
-        this.Imagenes.post(sendUrl, folder.value).subscribe((x) => {
-            if (this.targetDirectory != 'master') {
-                this.subfolderList[this.tempIndex].folders.push(folder.value);
-            } else {
-                this.allFoldersSystem.forEach((x) => {
-                    if (x.category == this.tempCategory) {
-                        x.folders.push(folder.value);
-                    }
-                });
-            }
+        const params = new HttpParams()
+            .set('validate', actualToken)
+            .set('parentFolder', this.tempMaster)
+            .set('category', this.tempCategory)
+            .set('folder', folder.value)
+            .set('target', this.targetDirectory);
 
-            this.createdirectoryDialog = false;
-            folder.reset();
-        });
+        this.Imagenes.post(this.url, folder.value, { params }).subscribe(
+            (x) => {
+                if (this.targetDirectory != 'master') {
+                    this.subfolderList[this.tempIndex].folders.push(
+                        folder.value
+                    );
+                } else {
+                    this.allFoldersSystem.forEach((x) => {
+                        if (x.category == this.tempCategory) {
+                            x.folders.push(folder.value);
+                        }
+                    });
+                }
+
+                this.createdirectoryDialog = false;
+                folder.reset();
+            }
+        );
     }
     createMasterDirectory(category: string) {
         this.createdirectoryDialog = true;
         this.tempCategory = category;
         this.targetDirectory = 'master';
     }
-    uploadFiles(event: any) {
+    uploadFiles(event: any, input: NgModel) {
         let actualToken = this.token.getValidateToken();
         if (event.target.files[0]) {
             const formData = new FormData();
             const fileList: FileList = event.target.files;
             for (var i = 0; i <= fileList.length; i++) {
-                formData.append('MyProducts[]', event.target.files[i]);
+                if (event.target.files[i] != undefined) {
+                    if (event.target.files[i].size <= 2048000) {
+                        formData.append('MyProducts[]', event.target.files[i]);
+                    }
+                }
             }
-            this.Imagenes.post(
-                this.url +
-                    '?validate=' +
-                    actualToken +
-                    '&parentFolder=' +
-                    this.tempMaster +
-                    '&category=' +
-                    this.tempCategory +
-                    '&folder=' +
-                    this.tempFolder.replaceAll('+', '%2B') +
-                    '&subfolder=' +
-                    this.tempsubfolder,
-                formData
-            ).subscribe({
-                next: this.okUpload.bind(this),
-                error: this.consoleLog.bind(this),
-            });
+            if (formData.getAll('MyProducts[]').length > 0) {
+                const params = new HttpParams()
+                    .set('validate', actualToken)
+                    .set('parentFolder', this.tempMaster)
+                    .set('category', this.tempCategory)
+                    .set('folder', this.tempFolder)
+                    .set('subfolder', this.tempsubfolder);
+                this.Imagenes.post(this.url, formData, { params }).subscribe({
+                    next: this.okUpload.bind(this),
+                    error: this.consoleLog.bind(this),
+                });
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Rejected',
+                    detail: 'There was an error, check the format (webp), size (2MB) and delete special characters in the file name',
+                });
+            }
+            input.reset();
         }
     }
     okUpload(response: any) {
-        this.deleteProductsDialog = false;
+        response
+            ? (this.deleteProductsDialog = false)
+            : this.messageService.add({
+                  severity: 'error',
+                  summary: 'Rejected',
+                  detail: 'There was an error, check the format (webp), size (2MB) and delete special characters in the file name',
+              });
     }
     consoleLog(x: any) {
         this.messageService.add({
             severity: 'error',
             summary: 'Rejected',
-            detail: 'There was an error, check the format and name of the elements',
+            detail: 'There was an error, check the format (webp), size (2MB) and delete special characters in the file name',
         });
         console.log(x);
     }

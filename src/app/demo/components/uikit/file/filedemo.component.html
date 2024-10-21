@@ -215,11 +215,13 @@
             <i class="pi pi-plus"></i> Import Image
         </label>
         <input
+            ngModel
+            #image_upload="ngModel"
             id="image-upload"
             type="file"
             class="file-upload"
             multiple
-            (change)="uploadFiles($event)"
+            (change)="uploadFiles($event, image_upload)"
         />
     </ng-template>
 </p-dialog>

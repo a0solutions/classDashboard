@@ -18,6 +18,7 @@ export class CollectionsComponent implements OnInit {
     formfiles = new FormData();
     collections: Observable<any>;
     url: string = urls.url;
+    saveButton = 'Save';
     constructor(
         private CollectionService: CollectionsService,
         private messageService: MessageService
@@ -54,6 +55,7 @@ export class CollectionsComponent implements OnInit {
         }
     }
     sendCollection(form: NgForm) {
+        this.saveButton = 'Processing...';
         this.CollectionService.postCollection(
             this.name,
             this.description,
@@ -66,6 +68,7 @@ export class CollectionsComponent implements OnInit {
                 summary: 'Confirmed',
                 detail: 'The collection was created',
             });
+            this.saveButton = 'Save';
             if (!x) {
                 this.messageService.add({
                     severity: 'error',
@@ -73,6 +76,7 @@ export class CollectionsComponent implements OnInit {
                     detail: 'Max size for files 2MB',
                 });
             }
+            this.saveButton = 'Save';
         });
     }
     deleteCollection(id: string) {

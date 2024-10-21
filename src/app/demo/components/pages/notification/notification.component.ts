@@ -3,6 +3,7 @@ import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Notification } from 'src/app/demo/api/customer';
 import { NotificationsService } from 'src/app/demo/service/notifications.service';
+import { TokenService } from 'src/app/demo/service/token.service';
 import { urls } from 'src/environments/environment';
 
 @Component({
@@ -28,9 +29,17 @@ export class NotificationComponent implements OnInit {
     date: string = '';
     subjects: string[] = [];
     activeCamp: boolean[] = [];
-    constructor(private notificationsService: NotificationsService) {}
+    isAdmin: boolean = false;
+    constructor(
+        private notificationsService: NotificationsService,
+        private token: TokenService
+    ) {}
 
     ngOnInit() {
+        this.token.isAdmin.subscribe((x) => {
+            this.isAdmin = x;
+            console.log(x);
+        });
         this.notificationsService
             .getAllNotifications()
             .subscribe((x: Notification[]) => {

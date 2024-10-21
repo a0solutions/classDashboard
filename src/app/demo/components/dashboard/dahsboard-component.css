@@ -1,0 +1,7 @@
+.hover-light .card:hover {
+    background: rgb(250 244 255) !important;
+}
+.hover-light .card {
+    cursor: pointer;
+    transition: all 0.5s;
+}

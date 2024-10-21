@@ -19,6 +19,7 @@ interface BestSellers {
     count: number;
 }
 @Component({
+    styleUrls: ['./dahsboard-component.css'],
     templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -167,12 +168,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return false;
     }
     isPlaced(order: order): boolean {
+        console.log(order);
         if (
-            order.atelier == '' &&
-            order.finale == '' &&
-            order.canceled == '' &&
-            order.delivered == '' &&
-            order.roadshow == ''
+            order.atelier == null &&
+            order.finale == null &&
+            order.canceled == null &&
+            order.delivered == null &&
+            order.roadshow == null
         )
             return true;
         return false;

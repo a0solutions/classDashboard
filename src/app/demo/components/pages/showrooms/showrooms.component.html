@@ -1,0 +1,275 @@
+<p-toast></p-toast>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <button
+                pButton
+                pRipple
+                type="button"
+                label="+ Create new showroom"
+                (click)="createModalDialog = true"
+            ></button>
+        </div>
+    </div>
+</div>
+<ng-container *ngFor="let category of allCategories">
+    <div class="grid">
+        <div class="col-12">
+            <div class="card">
+                <h5>{{ category.category }}</h5>
+                <p-carousel
+                    [value]="filterShowrooms(category.category)"
+                    [numVisible]="3"
+                    [numScroll]="3"
+                    [circular]="false"
+                    [responsiveOptions]="carouselResponsiveOptions"
+                >
+                    <ng-template let-showroom pTemplate="item">
+                        <div
+                            class="border-round m-2 text-center p-2"
+                            style="border: 1px solid var(--surface-d)"
+                        >
+                            <div class="my-5">
+                                <img
+                                    (click)="openImageModal(showroom)"
+                                    [src]="showroom.img"
+                                    [alt]="showroom.name"
+                                    class="shadow-4"
+                                    width="70%"
+                                />
+                            </div>
+                            <div>
+                                <h5 class="mb-1">{{ showroom.name }}</h5>
+
+                                <div class="my-5">
+                                    <button
+                                        pButton
+                                        pRipple
+                                        icon="pi pi-trash"
+                                        class="mr-2 p-button-rounded p-button-danger"
+                                        (click)="deleteShowroom(showroom)"
+                                    ></button>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-carousel>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<p-dialog
+    [(visible)]="deleteHideDialog"
+    header="Confirm"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+>
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Are you sure you want to proceed with this action?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            icon="pi pi-times"
+            class="p-button-text"
+            label="No"
+            (click)="deleteHideDialog = false"
+        ></button>
+        <button
+            pButton
+            pRipple
+            icon="pi pi-check"
+            class="p-button-text"
+            label="Yes"
+            (click)="confirm()"
+        ></button>
+    </ng-template>
+</p-dialog>
+<p-dialog
+    [(visible)]="referenceHideDialog"
+    header="New reference"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+>
+    <div class="align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>You can change or add a new reference</span>
+        <p class="w-100 mt-3">
+            <label>Reference</label><br />
+            <input
+                [(ngModel)]="referenceSelected"
+                type="text"
+                class="w-100"
+                pInputText
+                required
+            />
+        </p>
+    </div>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            icon="pi pi-times"
+            class="p-button-text"
+            label="Delete"
+            (click)="deletePin()"
+        ></button>
+        <button
+            pButton
+            pRipple
+            icon="pi pi-check"
+            class="p-button-text"
+            label="Save"
+            (click)="confirmPopupChange()"
+        ></button>
+    </ng-template>
+</p-dialog>
+<p-dialog
+    [(visible)]="ImageHideDialog"
+    header="Showroom"
+    [modal]="true"
+    [style]="{ width: '100%', height: '100vh', top: '0px', maxHeight: '100%' }"
+>
+    <div class="flex">
+        <div class="col-10 p-2 position-relative">
+            <img
+                [src]="imageModal"
+                class="shadow-4"
+                width="100%"
+                (click)="settingPin($event)"
+            />
+            <ng-container *ngFor="let popup of popupsSelected; index as i">
+                <p
+                    (click)="updatePin(i)"
+                    class="popups p-2 text-center"
+                    [style]="{ top: popup.top + '%', left: popup.left + '%' }"
+                >
+                    <strong> {{ i }}</strong>
+                </p>
+            </ng-container>
+        </div>
+        <div class="col-2 p-2 product-list">
+            <ng-container *ngFor="let popup of popupsSelected; index as i">
+                <div class="col-12 p-0 mb-3">
+                    <div class="surface-card shadow-2 p-3 border-round">
+                        <div class="flex justify-content-between mb-3">
+                            <div>
+                                <span class="block text-500 font-medium mb-3"
+                                    >Product</span
+                                >
+                                <div class="text-900 font-medium text-xl">
+                                    {{ popup.reference }}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-green-500 font-medium"
+                            >Pin No {{ i }}
+                        </span>
+                        <span class="text-500">in the image</span>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            icon="pi pi-times"
+            class="p-button-text"
+            label="Cerrar"
+            (click)="ImageHideDialog = false"
+        ></button>
+        <button
+            pButton
+            pRipple
+            icon="pi pi-check"
+            class="p-button-text"
+            label="Save"
+            (click)="confirmSaveShowroomChanges()"
+        ></button>
+    </ng-template>
+</p-dialog>
+<p-dialog
+    [(visible)]="createModalDialog"
+    header="Create new showroom"
+    [modal]="true"
+    [style]="{ width: '750px' }"
+>
+    <div>
+        <form ngForm #creationForm="ngForm" class="flex">
+            <div class="col-6">
+                <div class="grid formgrid">
+                    <ng-container *ngFor="let category of allCategories">
+                        <div class="col-12">
+                            <div class="field-radiobutton">
+                                <p-radioButton
+                                    name="category"
+                                    [value]="category.category"
+                                    [(ngModel)]="valRadio"
+                                    [id]="category.category"
+                                ></p-radioButton>
+                                <label [for]="category.category">{{
+                                    category.category
+                                }}</label>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="col-6">
+                <div>
+                    <p class="w-100 mb-3">
+                        <label>Showroom name*</label><br />
+                        <input
+                            ngModel
+                            name="showroomName"
+                            type="text"
+                            class="w-100"
+                            pInputText
+                            required
+                        />
+                    </p>
+                </div>
+                <div>
+                    <label
+                        for="showroom-upload"
+                        class="custom-file-upload p-button"
+                    >
+                        <i class="pi pi-plus"></i> Import Showroom Image (1920px
+                        x 1080px) required
+                    </label>
+                    <input
+                        ngModel
+                        name="showroomImage"
+                        id="showroom-upload"
+                        type="file"
+                        class="file-upload"
+                        multiple
+                        (change)="uploadImage($event)"
+                    />
+                </div>
+            </div>
+        </form>
+    </div>
+    <ng-template pTemplate="footer">
+        <button
+            pButton
+            pRipple
+            icon="pi pi-times"
+            class="p-button-text"
+            label="Cancel"
+            (click)="createModalDialog = false"
+        ></button>
+        <button
+            pButton
+            pRipple
+            icon="pi pi-check"
+            class="p-button-text"
+            label="Save"
+            (click)="createNewShowroom(creationForm)"
+        ></button>
+    </ng-template>
+</p-dialog>
