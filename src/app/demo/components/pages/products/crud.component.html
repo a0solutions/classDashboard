@@ -22,6 +22,28 @@
 
                 <ng-template pTemplate="right">
                     <a
+                        href="assets/files/UPDATE_STOCK.xlsx"
+                        download="UPDATE STOCK"
+                        pButton
+                        pRipple
+                        label="Template Stock"
+                        icon="pi pi-download"
+                        class="p-button-success mr-2"
+                    ></a>
+                    <label
+                        for="file-upload-shipping"
+                        class="custom-file-upload p-button me-5"
+                        style="margin-right: 60px"
+                    >
+                        <i class="pi pi-plus"></i> Import Shipping Details
+                    </label>
+                    <input
+                        id="file-upload-shipping"
+                        type="file"
+                        class="file-upload"
+                        (change)="uploadFileShipping($event)"
+                    />
+                    <a
                         href="assets/files/BBDD.xlsx"
                         download="BBDD"
                         pButton
@@ -30,6 +52,7 @@
                         icon="pi pi-download"
                         class="p-button-success mr-2"
                     ></a>
+
                     <label
                         for="file-upload"
                         class="custom-file-upload p-button"
@@ -60,7 +83,7 @@
                 responsiveLayout="scroll"
                 [rows]="30"
                 [scrollable]="true"
-                scrollHeight="500px"
+                scrollHeight="70vh"
                 [globalFilterFields]="[
                     'name',
                     'reference',
@@ -116,8 +139,16 @@
                                 class="ml-auto"
                             ></p-columnFilter>
                         </th>
+                        <th
+                            alignFrozen="right"
+                            style="white-space: nowrap"
+                            pFrozenColumn
+                            [frozen]="true"
+                        >
+                            Edit Stock
+                        </th>
                         <th alignFrozen="right" pFrozenColumn [frozen]="true">
-                            Edit
+                            Product
                         </th>
                     </tr>
                 </ng-template>
@@ -137,11 +168,14 @@
                             />
                         </td>
                         <td style="min-width: 15rem" *ngFor="let field of cols">
-                            <span class="p-column-title">{{
-                                field.header
-                            }}</span>
+                            <span
+                                class="p-column-title"
+                                style="white-space: nowrap"
+                                >{{ field.header }}</span
+                            >
                             <span
                                 *ngIf="field.field != 'price'; else pricesField"
+                                style="white-space: nowrap"
                             >
                                 {{ product[field.field] }}
                             </span>
@@ -149,16 +183,16 @@
                                 {{ product[field.field] | currency : "USD" }}
                             </ng-template>
                         </td>
-                        <!-- 
+
                         <td alignFrozen="right" pFrozenColumn [frozen]="true">
                             <p-tag
                                 icon="pi pi-pencil"
                                 class="cursor-pointer"
                                 severity="success"
-                                value="Edit"
+                                value="Stock"
                                 (click)="editProduct(product)"
                             ></p-tag>
-                        </td> -->
+                        </td>
                         <td
                             alignFrozen="right"
                             style="min-width: 10rem"
@@ -181,7 +215,7 @@
         <p-dialog
             [(visible)]="productDialog"
             [style]="{ width: '950px' }"
-            header="Product Details"
+            header="Stock & Shipments"
             [modal]="true"
             class="p-fluid"
         >

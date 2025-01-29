@@ -1,4 +1,4 @@
-<div class="field">
+<!-- <div class="field">
     <label for="name">Name</label>
     <input
         type="text"
@@ -14,8 +14,8 @@
     <small class="ng-dirty ng-invalid" *ngIf="submitted && !product.name"
         >Name is required.</small
     >
-</div>
-<div class="field">
+</div> -->
+<!-- <div class="field">
     <label for="description">Description</label>
     <textarea
         id="description"
@@ -25,8 +25,8 @@
         rows="3"
         cols="20"
     ></textarea>
-</div>
-<hr />
+</div> -->
+<!-- <hr />
 <div class="field">
     <label class="mb-3">Category</label>
 
@@ -47,8 +47,8 @@
         </div>
     </div>
 </div>
-<hr />
-<div class="field">
+<hr /> -->
+<!-- <div class="field">
     <label class="mb-3">Type</label>
 
     <div class="formgrid grid">
@@ -67,8 +67,8 @@
         </div>
     </div>
 </div>
-<hr />
-<div class="formgrid grid">
+<hr /> -->
+<!-- <div class="formgrid grid">
     <div class="field col-4">
         <label for="name">Parent Reference</label>
         <input
@@ -137,6 +137,10 @@
             >Input is required.</small
         >
     </div>
+    
+</div>
+<hr /> -->
+<div class="formgrid grid">
     <div class="field col-4">
         <label for="name">Stock</label>
         <input
@@ -153,10 +157,45 @@
             >Input is required.</small
         >
     </div>
+    <div class="field col-4">
+        <label for="name">Delivery</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.delivery"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.delivery
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.delivery"
+            >Input is required.</small
+        >
+    </div>
+    <div class="field col-4">
+        <label for="name">Shipping</label>
+        <input
+            type="text"
+            pInputText
+            [(ngModel)]="product.shipping"
+            required
+            autofocus
+            [ngClass]="{
+                'ng-invalid ng-dirty': submitted && !product.shipping
+            }"
+        />
+        <small
+            class="ng-dirty ng-invalid"
+            *ngIf="submitted && !product.shipping"
+            >Input is required.</small
+        >
+    </div>
 </div>
-<hr />
-<div class="formgrid grid">
-    <div class="field col-6">
+<!--<div class="formgrid grid">
+     <div class="field col-6">
         <label for="name">Color</label>
         <input
             type="text"
@@ -171,8 +210,8 @@
         <small class="ng-dirty ng-invalid" *ngIf="submitted && !product.color"
             >Input is required.</small
         >
-    </div>
-    <div class="field col-6">
+    </div> -->
+<!-- <div class="field col-6">
         <label for="name">Detail Color</label>
         <input
             type="text"
@@ -189,10 +228,10 @@
             *ngIf="submitted && !product.detailColor"
             >Input is required.</small
         >
-    </div>
+    </div> 
 </div>
-<hr />
-<div class="formgrid grid">
+<hr />-->
+<!-- <div class="formgrid grid">
     <div class="field col">
         <label for="price">Price</label>
         <p-inputNumber
@@ -204,8 +243,8 @@
         ></p-inputNumber>
     </div>
 </div>
-<hr />
-<div class="formgrid grid">
+<hr /> -->
+<!-- <div class="formgrid grid">
     <div class="field col">
         <label>Comfort Level</label>
         <input
@@ -679,4 +718,4 @@
             >Input is required.</small
         >
     </div>
-</div>
+</div> -->

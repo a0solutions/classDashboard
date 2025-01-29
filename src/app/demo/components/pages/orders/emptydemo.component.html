@@ -105,31 +105,27 @@
                         </td>
                         <td>{{ product.date }}</td>
                         <td>
-                            {{
-                                product.amount * 1 + product.taxes * 1
-                                    | currency : "USD"
-                            }}
+                            {{ product.amount * 1 | currency : "USD" }}
                         </td>
                         <td>
-                            <ng-container
-                                *ngIf="
-                                    product.paymentMethod == 'stripe';
-                                    else affirm
-                                "
-                            >
-                                <img
-                                    src="assets/images/stripe.png"
-                                    alt="stripe logo"
-                                    width="100%"
-                                />
-                            </ng-container>
-                            <ng-template #affirm>
-                                <img
-                                    src="assets/images/affirm.png"
-                                    alt="stripe logo"
-                                    width="100%"
-                                />
-                            </ng-template>
+                            <img
+                                *ngIf="product.paymentMethod == 'stripe'"
+                                src="assets/images/stripe.png"
+                                alt="stripe logo"
+                                width="100%"
+                            />
+                            <img
+                                *ngIf="product.paymentMethod == 'affirm'"
+                                src="assets/images/affirm.png"
+                                alt="stripe logo"
+                                width="100%"
+                            />
+                            <img
+                                *ngIf="product.paymentMethod == 'paypal'"
+                                src="assets/images/paypal.png"
+                                alt="stripe logo"
+                                width="100%"
+                            />
                         </td>
                         <td>
                             {{ product.taxes | currency : "USD" }}

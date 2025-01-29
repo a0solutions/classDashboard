@@ -62,15 +62,53 @@ export class CrudComponent implements OnInit {
             { field: 'name', header: 'Name' },
             { field: 'parentRef', header: 'Parent' },
             { field: 'reference', header: 'Sku' },
-            { field: 'price', header: 'Price' },
-            { field: 'stock', header: 'Stock' },
             { field: 'category', header: 'Category' },
             { field: 'subcategory', header: 'Subcategory' },
-            { field: 'color', header: 'Color' },
-            { field: 'detailColor', header: 'Detail Color' },
-            { field: 'date', header: 'Created' },
+            { field: 'price', header: 'Price' },
             { field: 'size', header: 'Size' },
             { field: 'sets', header: 'Sets' },
+            { field: 'color', header: 'Color' },
+            { field: 'detailColor', header: 'Detail Color' },
+            { field: 'headboardHeight', header: 'Headboard Height' },
+            { field: 'frameMaterial', header: 'Frame Material' },
+            { field: 'materialDetail', header: 'Material detail' },
+            { field: 'upholstered', header: 'Upholstered' },
+            { field: 'upholsteryMaterial', header: 'Upholstery Materail' },
+            {
+                field: 'upholsteryFillMaterial',
+                header: 'Upholstery Fill Materail',
+            },
+            // { field: 'description', header: 'Description' },
+            // { field: 'featureBullet', header: 'Feature Bullet' },
+            { field: 'countryManufacture', header: 'Country Manufacture' },
+            { field: 'shipType', header: 'Ship Type' },
+            { field: 'displaySets', header: 'Display Sets' },
+            { field: 'overallWidth', header: 'Overall Width' },
+            { field: 'overallHeight', header: 'Overall Height' },
+            { field: 'overallLenght', header: 'Overall Lenght' },
+            { field: 'overallWeight', header: 'Overall Weight' },
+            { field: 'levelAssembly', header: 'Level Assembly' },
+            { field: 'timeAssembly', header: 'Time Assembly' },
+            { field: 'comfortLevel', header: 'Comfort Level' },
+            { field: 'saditionalTools', header: 'Aditional Tools' },
+            { field: 'numberBoxes', header: 'Number of Boxes' },
+            { field: 'installationRequired', header: 'Installation Required' },
+            { field: 'commercialWarranty', header: 'Comercial Warranty' },
+
+            { field: 'productWarranty', header: 'Product Warranty' },
+            { field: 'warrantyLength', header: 'Warranty Lenght' },
+            { field: 'fullOrLimitedWarranty', header: 'Full or Limited' },
+            { field: 'warrantyDetails', header: 'Warranty Details' },
+            { field: 'stock', header: 'Stock' },
+            { field: 'delivery', header: 'Delivery' },
+            { field: 'shipping', header: 'Shipping' },
+            { field: 'new', header: 'New' },
+            { field: 'offer', header: 'Offer' },
+            { field: 'counterTopIncluded', header: 'Countertop' },
+            { field: 'counterMaterial', header: 'Countertop Material' },
+            { field: 'sinkIncluded', header: 'Sink' },
+            { field: 'sinkType', header: 'Sink Type' },
+            { field: 'date', header: 'Created' },
         ];
         this.selectedColumns = this.cols;
         this.statuses = [
@@ -220,6 +258,35 @@ export class CrudComponent implements OnInit {
             (event.target as HTMLInputElement).value,
             'contains'
         );
+    }
+    uploadFileShipping(event: any) {
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Saving changes...',
+            detail: 'Wait until the process is complete.',
+            life: 120000,
+        });
+        const file: File = event.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('MyShipping', file, file.name);
+            this.productService.uploadFileShipping(formData).subscribe((x) => {
+                console.log(x);
+                this.productService
+                    .getProducts()
+                    .toPromise()
+                    .then((data) => {
+                        this.products = data;
+                        this.cd.markForCheck();
+                    });
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Successful',
+                    detail: 'Shipping Details Uploaded',
+                    life: 3000,
+                });
+            });
+        }
     }
     uploadFile(event: any) {
         const file: File = event.target.files[0];

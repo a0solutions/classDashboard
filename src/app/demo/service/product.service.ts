@@ -60,6 +60,13 @@ export class ProductService {
             .set('validate', actualToken);
         return this.http.post(this.url, file, { params });
     }
+    uploadFileShipping(file: any) {
+        let actualToken = this.token.getValidateToken();
+        const params = new HttpParams()
+            .set('context', 'admin')
+            .set('validate', actualToken);
+        return this.http.post(this.url, file, { params });
+    }
     postPromo(promo: Promotion): Observable<object> {
         let actualToken = this.token.getValidateToken();
         const params = new HttpParams()

@@ -52,4 +52,6 @@ export interface Product {
     counterMaterial: string;
     sinkIncluded: string;
     sinkType: string;
+    delivery: string;
+    shipping: string;
 }
